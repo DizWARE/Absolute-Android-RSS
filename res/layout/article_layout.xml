@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="75px">
+  <TextView
+  	android:id = "@+id/tv_title"  	
+  	android:layout_width = "wrap_content"
+  	android:layout_height = "wrap_content"
+  	android:layout_alignParentLeft = "true"
+  	android:layout_margin = "5px"
+  	android:text = "Title of the Article"
+  	android:textStyle = "bold"
+  	/>
+  <TextView
+    android:id = "@+id/tv_date"
+  	android:layout_width = "wrap_content"
+  	android:layout_height = "wrap_content"
+  	android:layout_alignParentRight = "true"
+  	android:layout_margin = "5px"
+  	android:text = "Date"
+  	/>
+  <TextView
+    android:id = "@+id/tv_description"
+  	android:layout_width = "wrap_content"
+  	android:layout_height = "wrap_content"
+  	android:layout_alignParentLeft = "true"
+  	android:layout_margin = "5px"
+  	android:layout_below = "@id/tv_title"
+  	android:text = "Couple lines of the description"
+  	/>
+  
+</RelativeLayout>
