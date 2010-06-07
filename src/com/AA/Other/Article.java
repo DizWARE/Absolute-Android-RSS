@@ -1,7 +1,6 @@
 package com.AA.Other;
 
-public class Article 
-{
+public class Article {
 	private String description;
 	private String title;
 	private String date;
@@ -10,13 +9,11 @@ public class Article
 	/***
 	 * Creates a new unread article
 	 */
-	public Article() 
-	{
+	public Article() {
 		read = false;
 	}
 	
-	public Article(String description, String title, String date)
-	{
+	public Article(String description, String title, String date){
 		this.description = description;
 		this.date = date;
 		this.title = title;
@@ -26,8 +23,7 @@ public class Article
 	 * Gets the date of the article
 	 * @return - Article date
 	 */
-	public String getDate() 
-	{
+	public String getDate() {
 		return date;
 	}
 	
@@ -35,8 +31,7 @@ public class Article
 	 * Gets the description of the article
 	 * @return - Article description
 	 */
-	public String getDescription() 
-	{
+	public String getDescription() {
 		return description;
 	}
 	
@@ -44,8 +39,7 @@ public class Article
 	 * Gets the title of the article
 	 * @return - Article description
 	 */
-	public String getTitle() 
-	{
+	public String getTitle() {
 		return title;
 	}
 	
@@ -53,16 +47,14 @@ public class Article
 	 * Checks if the article has been read
 	 * @return - returns if the article has been read or not
 	 */
-	public boolean isRead() 
-	{
+	public boolean isRead() {
 		return read;
 	}
 	
 	/***
 	 * Sets the article as read
 	 */
-	public void markRead() 
-	{
+	public void markRead() {
 		this.read = true;
 	}
 	
@@ -70,8 +62,7 @@ public class Article
 	 * Sets the article date
 	 * @param date - Article date
 	 */
-	public void setDate(String date) 
-	{
+	public void setDate(String date) {
 		this.date = date;
 	}
 	
@@ -79,8 +70,7 @@ public class Article
 	 * Sets the article description
 	 * @param description - Article description
 	 */
-	public void setDescription(String description) 
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 	
@@ -88,8 +78,7 @@ public class Article
 	 * Sets the article title
 	 * @param title - Article title
 	 */
-	public void setTitle(String title) 
-	{
+	public void setTitle(String title) {
 		this.title = title;
 	}
 	
@@ -100,10 +89,7 @@ public class Article
 	 * to describe the article
 	 * @param xml - Xml Snippet that we are reading from
 	 */
-	public static Article buildFromXml(StringBuffer xml)
-	{
+	public static Article buildFromXml(StringBuffer xml){
 		return null;
 	}
-	
-	
 }

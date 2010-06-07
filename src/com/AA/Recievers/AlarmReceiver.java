@@ -11,12 +11,8 @@ import android.content.Intent;
  * This Receiver is ticked when an alarm message is sent out by the
  * System. It will call the RssService when this happens
  * 
- * @author Tyler Robinson 
- * 
- * (Everyone else who edit this file should add their name)
  */
-public class AlarmReceiver extends BroadcastReceiver 
-{
+public class AlarmReceiver extends BroadcastReceiver {
 
 	/***
 	 * Called when the receiver catches the message defined by the
@@ -26,8 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver
 	 * @param intent - Message that started this Receiver
 	 */
 	@Override
-	public void onReceive(Context context, Intent intent) 
-	{
+	public void onReceive(Context context, Intent intent) {
 		Intent service = new Intent();
 		service.setClass(context, RssService.class);
 		context.startService(service);
@@ -40,8 +35,7 @@ public class AlarmReceiver extends BroadcastReceiver
 	 * @param pendingIntent - Message that will be ping after the given delay
 	 * @param delay - How long, in milliseconds, till the message is sent
 	 */
-	public static void startAlarm(Context context, PendingIntent pendingIntent, long delay)
-	{
+	public static void startAlarm(Context context, PendingIntent pendingIntent, long delay){
 		
 	}
 	
@@ -52,8 +46,7 @@ public class AlarmReceiver extends BroadcastReceiver
 	 * @param pendingIntent - Message that is to be removed from the system queue
 	 * (must be exactly the same as what started the alarm message)
 	 */
-	public static void stopAlarm(Context context, PendingIntent pendingIntent)
-	{
+	public static void stopAlarm(Context context, PendingIntent pendingIntent){
 		
 	}
 
