@@ -377,13 +377,9 @@ public class AAMain extends ListActivity {
 			int textColor;
 
 			if (article.isRead())
-				bgColor =
-					settings.getInt("colorRead",
-							Color.WHITE);
+				bgColor = settings.getInt("colorRead", Color.WHITE);
 			else
-				bgColor =
-					settings.getInt("colorUnread",
-							Color.BLACK);
+				bgColor = settings.getInt("colorUnread", Color.BLACK);
 			row.setBackgroundColor(bgColor);
 
 
@@ -405,20 +401,16 @@ public class AAMain extends ListActivity {
 			row.setTag(article);
 
 
-		/**Click listener for the row**/
+			/**Click listener for the row**/
 			row.setOnClickListener(new OnClickListener() {
 			/***
-				 * Open the file browser when user clicks the article
-				 */
-						   @Override
-						   public void onClick(View v)
-						   {
-						   AAMain.this.
-						   openBrowser((Article) v.
-							   getTag());
-						   ArticleAdapter.this.
-						   notifyDataSetChanged();}
-						   });
+			 * Open the file browser when user clicks the article
+			 */
+			@Override public void onClick(View v){
+				AAMain.this.openBrowser((Article) v.getTag());
+				ArticleAdapter.this.
+				notifyDataSetChanged();}
+			});
 
 			return row;
 		}
