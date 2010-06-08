@@ -51,7 +51,7 @@ public class AAMain extends ListActivity {
 
 	BroadcastReceiver finishReceiver;
 
-	 ArrayList < Article > articles;
+	ArrayList < Article > articles;
 
 	View selectedView;
 
@@ -82,8 +82,7 @@ public class AAMain extends ListActivity {
 
 	/**Catches when the service has finished downloading the RSS**/
 		finishReceiver = new BroadcastReceiver() {
-			@Override
-				public void onReceive(Context context,
+			@Override public void onReceive(Context context,
 						  Intent intent) {
 				//TODO - Pull Bundle from intent and take the Article data from it
 				refresh();
@@ -95,15 +94,14 @@ public class AAMain extends ListActivity {
 
 		//***Action Listeners set up here***
 		ib_refresh.setOnClickListener(new OnClickListener() {
-		/***
+			/***
 			 * Handles when the user clicks the refresh button
 			 * @param v - view that was clicked
 			 */
-						  @Override
-						  public void onClick(View v) {
-						  refresh();}
-						  });
-		//***End Action Listener set up***
+			@Override public void onClick(View v) {
+				refresh();}
+			});
+			//***End Action Listener set up***
 	}
 
 	/***
@@ -176,9 +174,8 @@ public class AAMain extends ListActivity {
 		//TODO - Implement me :) And remove the test code	   
 
 		//Adds a fake article to the list of articles and issues a refresh of the GUI list
-		articles.
-			add(new
-			Article("This is article #" + articles.size(),
+		articles.add(new Article(
+				"This is article #" + articles.size(),
 				"Article " + articles.size(), "Uhhh",
 				"http://www.google.com"));
 		adapter.clear();
@@ -278,6 +275,7 @@ public class AAMain extends ListActivity {
 
 		shareChooser.setType("text/plain");
 
+		//Puts a subject in our article and some text from the article
 		shareChooser.putExtra(Intent.EXTRA_SUBJECT,
 					  "Check this article out");
 		shareChooser.putExtra(Intent.EXTRA_TEXT,
@@ -303,7 +301,7 @@ public class AAMain extends ListActivity {
 	 */
 	private class ArticleAdapter extends ArrayAdapter < Article > {
 
-	/***
+		/***
 		 * Constructor - An array adapter has several different constructors.
 		 * This one required both a list of articles and a layout resource for
 		 * each row.
@@ -322,7 +320,7 @@ public class AAMain extends ListActivity {
 		 * 
 		 * @param articles - that are being added to our list view of articles
 		 */
-			public void addList(List < Article > articles) {
+		public void addList(List < Article > articles) {
 			  for (Article article:articles)
 				this.add(article);
 		}
@@ -381,11 +379,11 @@ public class AAMain extends ListActivity {
 			if (article.isRead())
 				bgColor =
 					settings.getInt("colorRead",
-							Color.CYAN);
+							Color.WHITE);
 			else
 				bgColor =
 					settings.getInt("colorUnread",
-							Color.MAGENTA);
+							Color.BLACK);
 			row.setBackgroundColor(bgColor);
 
 
