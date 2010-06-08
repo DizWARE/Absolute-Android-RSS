@@ -1,29 +1,56 @@
 package com.AA.Other;
 
-public class Article {
+import java.io.Serializable;
+
+/***
+ * Describes an article that we pull out of the RSS feed
+ * 
+ * @author Tyler Robinson
+ */
+public class Article implements Serializable
+{
+	/**
+	 * Serial ID
+	 */
+	private static final long serialVersionUID = -3009386435305319933L;
+	
 	private String description;
 	private String title;
 	private String date;
+	private String url;
 	private boolean read;
 	
 	/***
 	 * Creates a new unread article
 	 */
-	public Article() {
+	public Article() 
+	{
 		read = false;
 	}
 	
-	public Article(String description, String title, String date){
+	/***
+	 * Creates a article with the given description, title, and date
+	 * 
+	 * @param description - Article description
+	 * @param title - Article title
+	 * @param date - Article date
+	 * @param url - Article URL
+	 */
+	public Article(String description, String title, String date, String url)
+	{
+		this();
 		this.description = description;
 		this.date = date;
 		this.title = title;
+		this.url = url;
 	}
 	
 	/***
 	 * Gets the date of the article
 	 * @return - Article date
 	 */
-	public String getDate() {
+	public String getDate() 
+	{
 		return date;
 	}
 	
@@ -31,7 +58,8 @@ public class Article {
 	 * Gets the description of the article
 	 * @return - Article description
 	 */
-	public String getDescription() {
+	public String getDescription() 
+	{
 		return description;
 	}
 	
@@ -39,7 +67,8 @@ public class Article {
 	 * Gets the title of the article
 	 * @return - Article description
 	 */
-	public String getTitle() {
+	public String getTitle() 
+	{
 		return title;
 	}
 	
@@ -47,14 +76,24 @@ public class Article {
 	 * Checks if the article has been read
 	 * @return - returns if the article has been read or not
 	 */
-	public boolean isRead() {
+	public boolean isRead() 
+	{
 		return read;
 	}
 	
 	/***
-	 * Sets the article as read
+	 * Toggles whether this article has been read or not
 	 */
-	public void markRead() {
+	public void toggleRead()
+	{
+		this.read = !this.read;
+	}
+	
+	/***
+	 * Marks the article as read
+	 */
+	public void markRead()
+	{
 		this.read = true;
 	}
 	
@@ -62,7 +101,8 @@ public class Article {
 	 * Sets the article date
 	 * @param date - Article date
 	 */
-	public void setDate(String date) {
+	public void setDate(String date) 
+	{
 		this.date = date;
 	}
 	
@@ -70,7 +110,8 @@ public class Article {
 	 * Sets the article description
 	 * @param description - Article description
 	 */
-	public void setDescription(String description) {
+	public void setDescription(String description) 
+	{
 		this.description = description;
 	}
 	
@@ -78,18 +119,26 @@ public class Article {
 	 * Sets the article title
 	 * @param title - Article title
 	 */
-	public void setTitle(String title) {
+	public void setTitle(String title) 
+	{
 		this.title = title;
 	}
 	
 	/***
-	 * Builds an article from XML
-	 * 
-	 * Should parse through the tags to get the info that will be used
-	 * to describe the article
-	 * @param xml - Xml Snippet that we are reading from
+	 * Gets the URL of the article
+	 * @return - Article URL
 	 */
-	public static Article buildFromXml(StringBuffer xml){
-		return null;
+	public String getUrl() 
+	{
+		return url;
 	}
+	
+	/***
+	 * Sets the article URL
+	 * @param url - Article URL
+	 */
+	public void setUrl(String url) 
+	{
+		this.url = url;
+	}		
 }

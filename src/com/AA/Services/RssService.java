@@ -8,8 +8,12 @@ import android.os.IBinder;
  * This service sends a request from the RSS feed, receives the data
  * that is sent back, and saves the data to the file system.
  * 
+ * @author Tyler Robinson 
+ * 
+ * (Everyone else who edit this file should add their name)
  */
-public class RssService extends Service {
+public class RssService extends Service 
+{
 	/***
 	 * Unnecessary method. Used if you are binding a service
 	 */
@@ -27,7 +31,8 @@ public class RssService extends Service {
 	 * needed throughout the service.
 	 */
 	@Override
-	public void onCreate() {
+	public void onCreate() 
+	{
 		// TODO Auto-generated method stub
 		super.onCreate();
 	}
@@ -38,7 +43,8 @@ public class RssService extends Service {
 	 * All service work should be done here
 	 */
 	@Override
-	public void onStart(Intent intent, int startId) {
+	public void onStart(Intent intent, int startId) 
+	{
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 	}
@@ -49,7 +55,8 @@ public class RssService extends Service {
 	 * Clean up all member variables here
 	 */
 	@Override
-	public void onDestroy() {
+	public void onDestroy() 
+	{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
@@ -59,7 +66,8 @@ public class RssService extends Service {
 	 * 
 	 * I don't know if this is all we need or not...Only time will tell.
 	 */
-	public void fetchData(){
+	public void fetchData()
+	{
 		//TODO Implement me please :)
 	}
 	
@@ -68,7 +76,8 @@ public class RssService extends Service {
 	 * 
 	 * This is another one that might change depending on how we do things
 	 */
-	public void writeData(){
+	public void writeData()
+	{
 		//TODO Implement me please :)
 	}
 
