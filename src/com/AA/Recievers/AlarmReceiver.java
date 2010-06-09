@@ -37,7 +37,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param pendingIntent - Message that will be ping after the given delay
 	 * @param delay - How long, in milliseconds, till the message is sent
 	 */
-		public static void startAlarm(Context context, long delay) {
+	public static void startAlarm(Context context, long delay) {
 		AlarmManager alarmManager =
 			(AlarmManager) context.getSystemService(Context.
 								ALARM_SERVICE);

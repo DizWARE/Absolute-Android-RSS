@@ -40,8 +40,8 @@ public class AASettings extends Activity {
 	 * Called when the activity starts. Not 100% necessary since 
 	 * this usually happens after onCreate or onResume, but may be
 	 * required for some state handling depending on the situation
-	 */ @Override
-	 protected void onStart() {
+	 */ 
+	@Override protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
 	}
