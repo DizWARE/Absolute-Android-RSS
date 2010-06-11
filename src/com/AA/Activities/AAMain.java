@@ -188,23 +188,34 @@ public class AAMain extends ListActivity {
 	 * Should display "Settings" when the user presses MENU
 	 */
 	@Override public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add("Settings");
+		menu.add(getString(R.string.color));
+		menu.add(getString(R.string.refresh));
+		menu.add(getString(R.string.widget));
 		return true;
 	}
 
 	/***
 	 * Starts the settings activity when user presses "Settings"
 	 * 
-	 * Note - This goes under the assumption that we don't add any new
-	 * options. If we do, this will have to be changed to handle that
-	 * 
 	 * @param menuItem - Item selected from the options menu
 	 */
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
 		Intent activity = new Intent();
-		activity.setClass(this, AASettings.class);
-		this.startActivity(activity);
-		return true;
+		if (item.getTitle().equals(getString(R.string.color))) {
+			activity.setClass(this, AAColors.class);
+			this.startActivity(activity);
+			return true;
+		}
+		else if (item.getTitle().equals(getString(R.string.refresh))) {
+			activity.setClass(this, AARefresh.class);
+			this.startActivity(activity);
+			return true;
+		} if (item.getTitle().equals(getString(R.string.widget))) {
+			activity.setClass(this, AAWidget.class);
+			this.startActivity(activity);
+			return true;
+		} else
+			return false;
 	}
 
 	/***
