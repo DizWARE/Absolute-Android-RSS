@@ -13,43 +13,6 @@ import java.util.Date;
  */
 public class DateFunctions {
 	/***
-	 * Given a 3 character month name, the month number is returned
-	 * 
-	 * I hate this code and proves the need for enumerations, but since
-	 * those don't exist in java(or I don't think they do), this is as close
-	 * as we can get(unless we defined a dictionary of some sort...but meh)
-	 * 
-	 * @param month - 3 character month name, i.e. jan, or feb
-	 * @return The number that this represents the month
-	 */
-	public static int getMonth(String month) {
-		if(month.equals("Jan"))
-			return 1;
-		else if(month.equals("Feb"))
-			return 2;
-		else if(month.equals("Mar"))
-			return 3;
-		else if(month.equals("Apr"))
-			return 4;
-		else if(month.equals("May"))
-			return 5;
-		else if(month.equals("Jun"))
-			return 6;
-		else if(month.equals("Jul"))
-			return 7;
-		else if(month.equals("Aug"))
-			return 8;
-		else if(month.equals("Sep"))
-			return 9;
-		else if(month.equals("Oct"))
-			return 10;
-		else if(month.equals("Nov"))
-			return 11;
-		else
-			return 12;
-	}
-	
-	/***
 	 * Given a month number, the month name is returned
 	 * 
 	 * I hate this code and proves the need for enumerations, but since
