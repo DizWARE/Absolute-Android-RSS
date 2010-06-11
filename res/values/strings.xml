@@ -2,4 +2,7 @@
 <resources>
     
     <string name="app_name">Absolutely Android App</string>
+<string name="color">Choose Color</string>
+<string name="refresh">Refresh Options</string>
+<string name="widget">Widget Options</string>
 </resources>
