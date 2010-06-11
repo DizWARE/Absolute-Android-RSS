@@ -1,7 +1,9 @@
 package com.AA.Activities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
@@ -80,7 +82,7 @@ public class AAMain extends ListActivity {
 		ib_refresh = (ImageButton) findViewById(R.id.ib_refresh);
 		//***End GUI Set up***
 
-	/**Catches when the service has finished downloading the RSS**/
+		/**Catches when the service has finished downloading the RSS**/
 		finishReceiver = new BroadcastReceiver() {
 			@Override public void onReceive(Context context,
 						  Intent intent) {
@@ -173,12 +175,18 @@ public class AAMain extends ListActivity {
 	private void refresh() {
 		//TODO - Implement me :) And remove the test code	   
 
+		String longString = "Alright, just testing what happens when I make a string" +
+				" that doesn't quite fit inside the article box so that I can see how" +
+				" it reacts when I make a really long article description...Supected output" +
+				" would be an extending space for the data but we will see";
 		//Adds a fake article to the list of articles and issues a refresh of the GUI list
 		articles.add(new Article(
-				"This is article #" + articles.size(),
-				"Article " + articles.size(), "Uhhh",
-				"http://www.google.com"));
+				longString,
+				"Article " + articles.size(), "Wed, "+ (new Random().nextInt(29)+1)+ " Jun 2010 16:13:47",
+				"http://www.google.com"));	
+		
 		adapter.clear();
+		Collections.sort(articles);
 		adapter.addList(articles);
 	}
 
@@ -211,8 +219,7 @@ public class AAMain extends ListActivity {
 	 * Creates a list of options when long pressing an item that has been registered for a
 	 * context menu
 	 */
-	@Override
-		public void onCreateContextMenu(ContextMenu menu, View v,
+	@Override public void onCreateContextMenu(ContextMenu menu, View v,
 						ContextMenuInfo menuInfo) {
 		selectedView = v;
 		Article article = (Article) v.getTag();
@@ -285,8 +292,7 @@ public class AAMain extends ListActivity {
 					  "To read more, click this link(or copy it into URL bar): "
 					  + a.getUrl());
 
-		startActivity(Intent.
-				  createChooser(shareChooser,
+		startActivity(Intent.createChooser(shareChooser,
 						"How do you want to share?"));
 	}
 
@@ -335,8 +341,7 @@ public class AAMain extends ListActivity {
 		 * @param convertView - Old view that needs to be converted...we won't use this.
 		 * @param parent - parent that this view gets attached to
 		 */
-		@Override
-			public View getView(int position, View convertView,
+		@Override public View getView(int position, View convertView,
 					ViewGroup parent) {
 			//Creates a layout inflater using the main activity's context
 			LayoutInflater inflater =
@@ -382,7 +387,6 @@ public class AAMain extends ListActivity {
 				bgColor = settings.getInt("colorUnread", Color.BLACK);
 			row.setBackgroundColor(bgColor);
 
-
 			//Produces a complementary color of the background color and sets
 			//it to the foreground color; this way the user never hides the text
 			int r = (~Color.red(bgColor)) & 0xff;
@@ -399,7 +403,6 @@ public class AAMain extends ListActivity {
 
 			//Stores the article within the view(for access elsewhere)
 			row.setTag(article);
-
 
 			/**Click listener for the row**/
 			row.setOnClickListener(new OnClickListener() {

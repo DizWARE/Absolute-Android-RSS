@@ -1,53 +1,67 @@
 package com.AA.Other;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 /***
  * Describes an article that we pull out of the RSS feed
  * 
  * @author Tyler Robinson
  */
-public class Article implements Serializable {
+public class Article implements Serializable, Comparable<Article> {
 	/**
 	 * Serial ID
 	 */
 	private static final long serialVersionUID = -3009386435305319933L;
 
 	private String description;
-	private String title;
-	private String date;
+	private String title;	
 	private String url;
+	
 	private boolean read;
+	
+	private Calendar articleDate;
 
 	/***
 	 * Creates a new unread article
 	 */
 	public Article() {
 		read = false;
+		articleDate = Calendar.getInstance();
 	}
 	/***
 	 * Creates a article with the given description, title, and date
 	 * 
 	 * @param description - Article description
 	 * @param title - Article title
-	 * @param date - Article date
 	 * @param url - Article URL
+	 * @param date - Article date; String format should be like this:
+	 * 
+	 * <Day name:3 letters>, DD <Month name: 3 letters> YYYY HH:MM:SS +0000
 	 */
 	public Article(String description, String title,
 				   String date, String url) {
 		this();
-		this.description = description;
-		this.date = date;
+		this.description = description;		
 		this.title = title;
 		this.url = url;
+		this.articleDate = DateFunctions.makeDate(date);
 	}
 
 	/***
-	 * Gets the date of the article
+	 * Gets the formatted date of when the article was published
+	 * 
+	 * For example, if the article was posted earlier that day, this would
+	 * return the number of hours in which the article was posted, like this:
+	 * 
+	 * "About x hours ago"
+	 * 
+	 * There are other intelligent date reductions as well
+	 * 
 	 * @return - Article date
 	 */
-	public String getDate() {
-		return date;
+	public String getDate() {		
+		return DateFunctions.convertToString(articleDate);
 	}
 
 	/***
@@ -82,18 +96,21 @@ public class Article implements Serializable {
 	}
 
 	/***
-	 * Marks the article as read
+	 * Marks the article as just read
 	 */
 	public void markRead() {
 		this.read = true;
 	}
 
 	/***
-	 * Sets the article date
+	 * Sets the article date; String format required looks like this:
+	 * 
+	 * <Day name:3 letters>, DD <Month name: 3 letters> YYYY HH:MM:SS +0000
+	 * 
 	 * @param date - Article date
 	 */
 	public void setDate(String date) {
-		this.date = date;
+		articleDate = DateFunctions.makeDate(date);
 	}
 
 	/***
@@ -126,5 +143,15 @@ public class Article implements Serializable {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	/***
+	 * Defines the Natural order of an article...Should be based off of the
+	 * date
+	 * 
+	 * @param other - The other article to compare to
+	 */
+	@Override public int compareTo(Article other) {
+		return -this.articleDate.compareTo(other.articleDate);
 	}
 }
