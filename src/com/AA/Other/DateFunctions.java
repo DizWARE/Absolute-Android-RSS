@@ -1,7 +1,9 @@
 package com.AA.Other;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Scanner;
+import java.util.Date;
 
 /***
  * Bunch of functions for handling dates that represent an article
@@ -87,23 +89,24 @@ public class DateFunctions {
 	/***
 	 * Creates a Calendar object based off a string with this format
 	 * 
-	 * <Day name:3 letters>, DD <Month name: 3 letters> YYYY HH:MM:SS +0000 <---What is this?? Idk, just ignore
+	 * <Day name:3 letters>, DD <Month name: 3 letters> YYYY HH:MM:SS +0000
 	 * @param date - The string we are to convert to a calendar date
 	 * @return - The calendar date object that this string represents
 	 */
 	public static Calendar makeDate(String date) {
-		Scanner reader = new Scanner(date);
-		reader.next();
-		
-		int day = reader.nextInt();		
-		int month = DateFunctions.getMonth(reader.next())-1;		
-		int year = reader.nextInt();
-		
-		//Split the time HH:MM:SS into [HH][MM][SS]
-		String[] time = reader.next().split(":");		
-		
+		Date d = null;
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(year, month, day,Integer.parseInt(time[0]),Integer.parseInt(time[1]));
+		try 
+		{			
+			//Parses the date from the <Day name:3 letters>, DD <Month name: 3 letters> YYYY HH:MM:SS +0000 format
+			SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+            d = format.parse(date);
+			calendar.setTime(d);			
+		} catch (ParseException e) {
+			//If the date is fudged, just set the date to the current date
+			//I have no idea what else to do in this case...Any ideas?
+			e.printStackTrace();
+		}		
 		return calendar;
 	}
 	
@@ -156,8 +159,8 @@ public class DateFunctions {
 				printDate = "About " + (currentTime.get(Calendar.MINUTE) - 
 						articleDate.get(Calendar.MINUTE)) + " mins ago"; 
 			else
-				printDate = "About " + (currentTime.get(Calendar.HOUR) - 
-						articleDate.get(Calendar.HOUR)) + " hours ago";
+				printDate = "About " + (currentTime.get(Calendar.HOUR_OF_DAY) - 
+						articleDate.get(Calendar.HOUR_OF_DAY)) + " hours ago";
 		}
 		else if((isDateFieldEqual(Calendar.YEAR,articleDate,currentTime) &&
 				currentTime.get(Calendar.DAY_OF_YEAR) - articleDate.get(Calendar.DAY_OF_YEAR) == 1)||

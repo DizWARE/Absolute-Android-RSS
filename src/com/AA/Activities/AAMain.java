@@ -175,6 +175,7 @@ public class AAMain extends ListActivity {
 	private void refresh() {
 		//TODO - Implement me :) And remove the test code	   
 
+		Random rand = new Random();
 		String longString = "Alright, just testing what happens when I make a string" +
 				" that doesn't quite fit inside the article box so that I can see how" +
 				" it reacts when I make a really long article description...Supected output" +
@@ -182,8 +183,9 @@ public class AAMain extends ListActivity {
 		//Adds a fake article to the list of articles and issues a refresh of the GUI list
 		articles.add(new Article(
 				longString,
-				"Article " + articles.size(), "Wed, "+ (new Random().nextInt(29)+1)+ " Jun 2010 16:13:47",
-				"http://www.google.com"));	
+				"Article " + articles.size(), "Thu, " + rand.nextInt(31) + 
+				" Jun 2010 " + rand.nextInt(24) + ":" + rand.nextInt(60) + 
+				":" + rand.nextInt(60) + " +0000", "http://www.google.com"));	
 		
 		adapter.clear();
 		Collections.sort(articles);
