@@ -33,7 +33,7 @@ import com.AA.Services.RssService;
  * This is the main activity of the app...it is what is launched 
  * when the user starts the application
  * 
- * @author Tyler Robinson 
+ * @author Tyler Robinson and Leif Andersen
  * 
  * (Everyone else who edit this file should add their name)
  */
