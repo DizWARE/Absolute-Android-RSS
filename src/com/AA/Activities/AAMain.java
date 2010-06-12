@@ -16,7 +16,6 @@ package com.AA.Activities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
@@ -187,7 +186,7 @@ public class AAMain extends ListActivity {
 	 * the ArticleAdapter
 	 */
 	private void refresh() {
-		List<Articles> temp = RSSParse.getArticles(false,this);
+		List<Article> temp = RSSParse.getArticles(false,this);
 		if(temp == null) 
 			return;
 		articles = temp;
