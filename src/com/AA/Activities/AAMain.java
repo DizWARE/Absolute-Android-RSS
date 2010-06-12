@@ -187,7 +187,10 @@ public class AAMain extends ListActivity {
 	 * the ArticleAdapter
 	 */
 	private void refresh() {
-		articles = RSSParse.getArticles(false,this);
+		List<Articles> temp = RSSParse.getArticles(false,this);
+		if(temp == null) 
+			return;
+		articles = temp;
 		adapter.clear();
 		Collections.sort(articles);
 		adapter.addList(articles);
