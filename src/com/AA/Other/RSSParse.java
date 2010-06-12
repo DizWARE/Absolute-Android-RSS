@@ -116,8 +116,7 @@ public class RSSParse{
 			Log.e("AARSS","Parse Exception in RSS feed",e);
 			return null;
 		}catch(Exception e){
-			//this won't happen(newDocumentBuilder should be safe since we use the defaults)
-			Log.e("AARSS","Unandled XML exception",e);
+			//this means either a builder exception or a timeout
 			return null;
 		}
 		return doc;
