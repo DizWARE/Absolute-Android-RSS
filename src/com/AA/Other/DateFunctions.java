@@ -76,7 +76,7 @@ public class DateFunctions {
 		{			
 			//Parses the date from the <Day name:3 letters>, DD <Month name: 3 letters> YYYY HH:MM:SS +0000 format
 			SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-            d = format.parse(date);
+			d = format.parse(date);
 			calendar.setTime(d);			
 		} catch (ParseException e) {
 			//If the date is fudged, just set the date to the current date
