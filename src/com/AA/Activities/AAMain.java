@@ -41,6 +41,7 @@ import android.widget.TextView;
 
 import com.AA.R;
 import com.AA.Other.Article;
+import com.AA.Other.RSSParse;
 import com.AA.Recievers.AlarmReceiver;
 import com.AA.Services.RssService;
 
@@ -66,7 +67,7 @@ public class AAMain extends ListActivity {
 
 	BroadcastReceiver finishReceiver;
 
-	ArrayList < Article > articles;
+	List<Article> articles;
 
 	View selectedView;
 
@@ -80,7 +81,7 @@ public class AAMain extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		articles = new ArrayList < Article > ();
+		articles = new ArrayList<Article>();
 
 		//Creates access to the application settings and marks the access code as
 		//closed off to just our app
@@ -186,20 +187,7 @@ public class AAMain extends ListActivity {
 	 * the ArticleAdapter
 	 */
 	private void refresh() {
-		//TODO - Implement me :) And remove the test code	   
-
-		Random rand = new Random();
-		String longString = "Alright, just testing what happens when I make a string" +
-				" that doesn't quite fit inside the article box so that I can see how" +
-				" it reacts when I make a really long article description...Supected output" +
-				" would be an extending space for the data but we will see";
-		//Adds a fake article to the list of articles and issues a refresh of the GUI list
-		articles.add(new Article(
-				longString,
-				"Article " + articles.size(), "Thu, " + rand.nextInt(31) + 
-				" Jun 2010 " + rand.nextInt(24) + ":" + rand.nextInt(60) + 
-				":" + rand.nextInt(60) + " +0000", "http://www.google.com"));	
-		
+		articles = RSSParse.getArticles(false,this);
 		adapter.clear();
 		Collections.sort(articles);
 		adapter.addList(articles);
