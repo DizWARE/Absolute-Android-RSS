@@ -53,7 +53,7 @@ public class AAColors extends ListActivity {
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+//		this.setListAdapter(adapter);
 
 		//Usually we would define the layout here...but its possible
 		//that we might make a PreferenceActivity instead(which requires
