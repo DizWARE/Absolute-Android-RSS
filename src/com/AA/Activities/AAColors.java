@@ -19,7 +19,6 @@ import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
