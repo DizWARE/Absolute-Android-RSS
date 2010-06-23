@@ -14,18 +14,20 @@
 
 package com.AA.Activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.AA.R;
+
 
 /***
  * This activity starts when the user presses "Settings" in the 
@@ -33,6 +35,11 @@ import com.AA.R;
  * 
  */
 public class AAColors extends ListActivity {
+	
+	static final int COLOR_UNREAD = 0;
+	static final int COLOR_READ = 1;
+	static final int COLOR_TEXT = 2;
+	
 	SharedPreferences colors;
 
 	//***GUI Member Variables(There will probably be a lot)***
@@ -56,7 +63,8 @@ public class AAColors extends ListActivity {
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(getApplicationContext(), ((TextView)view).getText(), Toast.LENGTH_SHORT).show();
+				showDialog(position, null);
+//				Toast.makeText(getApplicationContext(), ((TextView)view).getText(), Toast.LENGTH_SHORT).show();
 			}
 			
 		});
@@ -114,6 +122,40 @@ public class AAColors extends ListActivity {
 	@Override protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+	}
+	
+	/**
+	 * 
+	 */
+	@Override public Dialog onCreateDialog(int id, Bundle args) {
+		Dialog dialog = null;
+		switch(id) {
+		case COLOR_UNREAD:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Are you sure you want to exit?")
+			       .setCancelable(false)
+			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                finish();
+			           }
+			       })
+			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			dialog = builder.create();
+			break;
+		case COLOR_READ:
+			dialog = null;
+			break;
+		case COLOR_TEXT:
+			dialog = null;
+			break;
+		default:
+			dialog = null;
+		}
+		return dialog;
 	}
 	
 }
