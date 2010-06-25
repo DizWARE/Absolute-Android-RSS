@@ -26,6 +26,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -96,6 +97,11 @@ public class AAMain extends ListActivity {
 
 		//***GUI Elements Set up here***
 		ib_refresh = (ImageButton) findViewById(R.id.ib_refresh);
+		
+		//Sets custom font for app title.
+		TextView tv=(TextView)findViewById(R.id.AATitle);
+		Typeface face=Typeface.createFromAsset(getAssets(), "fonts/WREXHAM_.TTF");
+		tv.setTypeface(face);
 		//***End GUI Set up***
 
 		/**Catches when the service has finished downloading the RSS**/
