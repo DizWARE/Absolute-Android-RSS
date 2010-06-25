@@ -159,6 +159,14 @@ public class Article implements Serializable, Comparable<Article> {
 	}
 	
 	/***
+	 * If the name is equal, its reasonable to say that the articles are equal
+	 */
+	@Override
+	public boolean equals(Object o) {
+		return this.title.equals(((Article)o).title);
+	}
+	
+	/***
 	 * Defines the Natural order of an article...Should be based off of the
 	 * date
 	 * 

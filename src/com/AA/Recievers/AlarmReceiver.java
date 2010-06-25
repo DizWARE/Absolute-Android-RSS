@@ -39,7 +39,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param intent - Message that started this Receiver
 	 */
 	@Override public void onReceive(Context context, Intent intent) {
-		Intent service = new Intent();
+		 Intent service = new Intent();
+		 service.putExtra("background", true);
 		 service.setClass(context, RssService.class);
 		 context.startService(service);
 	}

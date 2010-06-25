@@ -18,11 +18,13 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,7 +42,6 @@ import android.widget.TextView;
 
 import com.AA.R;
 import com.AA.Other.Article;
-import com.AA.Other.RSSParse;
 import com.AA.Recievers.AlarmReceiver;
 import com.AA.Services.RssService;
 
@@ -69,6 +70,8 @@ public class AAMain extends ListActivity {
 	List<Article> articles;
 
 	View selectedView;
+	
+	ProgressDialog progressDialog;
 
 	/***
 	 * Called when the activity is created and put into memory.
@@ -99,10 +102,19 @@ public class AAMain extends ListActivity {
 		finishReceiver = new BroadcastReceiver() {
 			@Override public void onReceive(Context context,
 						  Intent intent) {
-				//TODO - Pull Bundle from intent and take the Article data from it
+				articles.clear();
+				
+				Bundle articleBundle = intent.getBundleExtra("articles");
+				ArrayList<String> titles = articleBundle.getStringArrayList("titles");
+				
+				for(String title : titles)
+					articles.add((Article)articleBundle.getSerializable(title));
+				
+				progressDialog.cancel();
+				
 				refresh();
 		}};
-
+		
 		//Registers the Receiver with this activity
 		this.registerReceiver(finishReceiver,
 					  new IntentFilter("RSS Finish"));
@@ -114,9 +126,14 @@ public class AAMain extends ListActivity {
 			 * @param v - view that was clicked
 			 */
 			@Override public void onClick(View v) {
-				refresh();}
+				runService();
+			}
 			});
 			//***End Action Listener set up***
+		
+		
+		//Starts the service
+		runService();
 	}
 
 	/***
@@ -125,13 +142,10 @@ public class AAMain extends ListActivity {
 	 * required for some state handling depending on the situation
 	 */
 	@Override protected void onStart() {
-		//Starts the service
-		Intent service = new Intent();
-		service.setClass(this, RssService.class);
-		this.startService(service);
-
 		super.onStart();
+
 	}
+	
 
 	/***
 	 * Called when the activity stops running in the foreground.
@@ -186,13 +200,38 @@ public class AAMain extends ListActivity {
 	 * the ArticleAdapter
 	 */
 	private void refresh() {
-		List<Article> temp = RSSParse.getArticles(false,this);
-		if(temp == null) 
-			return;
-		articles = temp;
 		adapter.clear();
 		Collections.sort(articles);
 		adapter.addList(articles);
+	}
+	
+	/***
+	 * Runs the fetching service. Pops up with a progress dialog, so that the user
+	 * knows something is happening in the background.
+	 */
+	private void runService() {
+		//Creates and shows a progress dialog
+		progressDialog = ProgressDialog.show(this, "", "Loading News. Please Wait...");
+		
+		Thread t = new Thread(){
+			@Override
+			public void run() {
+
+				//Tells the thread to wait 1 second. Allows the app
+					//to start before trying to launch the service
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					return;
+				}
+				
+				Intent service = new Intent();
+				service.putExtra("background", false);
+				service.setClass(AAMain.this, RssService.class);
+				AAMain.this.startService(service);
+			}
+		};
+		t.start();
 	}
 
 	/***
@@ -263,7 +302,10 @@ public class AAMain extends ListActivity {
 		else if (item.getItemId() == SHARE)
 			shareDialog(a);
 		else if (item.getItemId() == MARK)
+		{
 			a.toggleRead();
+			markArticle(a);
+		}
 
 		//Tells the adapter to refresh itself
 		adapter.notifyDataSetChanged();
@@ -278,12 +320,26 @@ public class AAMain extends ListActivity {
 		Intent browserLaunch = new Intent();
 
 		a.markRead();
-
+		markArticle(a);
+		
 		//Sets this intent to launch the default browser app with the given URL
 		browserLaunch.setAction(Intent.ACTION_DEFAULT);
 		browserLaunch.addCategory(Intent.CATEGORY_BROWSABLE);
 		browserLaunch.setData(Uri.parse(a.getUrl()));
 		this.startActivity(browserLaunch);
+	}
+	
+	/***
+	 * Updates the article data in the settings.
+	 * 
+	 * @param a - Article we need to update
+	 */
+	private void markArticle(Article a)
+	{
+		//Mark article as read inside the settings
+		Editor e =settings.edit();
+		e.putBoolean(a.getTitle(), a.isRead());
+		e.commit();
 	}
 
 	/***
@@ -311,6 +367,7 @@ public class AAMain extends ListActivity {
 		startActivity(Intent.createChooser(shareChooser,
 						"How do you want to share?"));
 	}
+	
 
 	/***
 	 * This adapter will take the article data and format each
@@ -427,8 +484,7 @@ public class AAMain extends ListActivity {
 			 */
 			@Override public void onClick(View v){
 				AAMain.this.openBrowser((Article) v.getTag());
-				ArticleAdapter.this.
-				notifyDataSetChanged();}
+				ArticleAdapter.this.notifyDataSetChanged();}
 			});
 
 			return row;
