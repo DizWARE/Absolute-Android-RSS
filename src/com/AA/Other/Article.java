@@ -55,8 +55,8 @@ public class Article implements Serializable, Comparable<Article> {
 	public Article(String description, String title,
 				   String date, String url) {
 		this();
-		this.description = description;		
-		this.title = title;
+		this.description = removeEscapeChar(description);		
+		this.title = removeEscapeChar(title);
 		this.url = url;
 		this.articleDate = DateFunctions.makeDate(date);
 	}
@@ -131,7 +131,7 @@ public class Article implements Serializable, Comparable<Article> {
 	 * @param description - Article description
 	 */
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = removeEscapeChar(description);
 	}
 
 	/***
@@ -139,7 +139,33 @@ public class Article implements Serializable, Comparable<Article> {
 	 * @param title - Article title
 	 */
 	public void setTitle(String title) {
-		this.title = title;
+		this.title = removeEscapeChar(title);
+	}
+	
+	/***
+	 * Removes all escape characters from a string
+	 * @param string - Any string that may contain the &# combo for escape characters
+	 * @return - A new string with the unicode replacements
+	 */
+	private String removeEscapeChar(String string)
+	{
+		int lastIndex = 0;
+		while(string.contains("&#"))
+		{
+			//Get the escape character index
+			int startIndex = string.indexOf("&#", lastIndex);
+			int endIndex = string.indexOf(";", startIndex);
+			
+			//and rip the sucker out of the string
+			String escapeChar = string.substring(startIndex, endIndex);
+			
+			//Get the unicode representation and replace all occurrences in the string
+			String replacementChar = HTMLConverter.convertEscapeChar(escapeChar);
+			string = string.replaceAll(escapeChar + ";", replacementChar);
+			
+			lastIndex = endIndex;
+		}		
+		return string;
 	}
 
 	/***

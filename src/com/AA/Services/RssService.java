@@ -95,6 +95,8 @@ public class RssService extends Service {
 	public void fetchData(boolean inBackground) {
 		//Get the list of articles
 		ArrayList<Article> articleList = (ArrayList<Article>) RSSParse.getArticles(inBackground, this);
+		if(articleList == null)
+			return;
 		
 		if(!inBackground)
 			readData(articleList);
@@ -134,7 +136,7 @@ public class RssService extends Service {
 			//read status
 		for(Article article : articleList)
 		{
-			titles += article.getTitle() + "/";		
+			titles += article.getTitle().replace("/", "::") + "/";		
 			e.putBoolean(article.getTitle(), article.isRead());
 		}		
 		
@@ -157,7 +159,7 @@ public class RssService extends Service {
 			//in the fetched data; remove it from our sett9jgs
 		for(int i = 0; i < articles.length; i++)
 		{
-			Article article = new Article("",articles[i],"","");
+			Article article = new Article("",articles[i].replace("::", "/"),"","");
 			if(articleList.contains(article) && settings.getBoolean(articles[i], false))
 				articleList.get(articleList.indexOf(article)).markRead();
 			else if(!articleList.contains(article))
