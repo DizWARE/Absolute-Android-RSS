@@ -19,7 +19,9 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,8 +45,11 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	private static final int COLOR_UNREAD = 0;
 	private static final int COLOR_READ = 1;
 	private static final int COLOR_TEXT = 2;
-	private static final String BRIGHTNESS_PREFERENCE_KEY = "brightness";
-	private static final String COLOR_PREFERENCE_KEY = "color";
+	
+//	private static final String BRIGHTNESS_PREFERENCE_KEY = "brightness";
+//	private static final String COLOR_PREFERENCE_KEY = "color";
+	private static final String READ_COLOR_KEY = "read_color";
+	private static final String UNREAD_COLOR_KEY = "unread_color_key";
 	private SharedPreferences colors;
 
 	//***GUI Member Variables(There will probably be a lot)***
@@ -123,7 +128,7 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 
 	/***
 	 * Called when the activity comes back into the foreground
-	 * 
+	 * d
 	 * Restore your data here(to give the user a seamless experience)
 	 */
 	@Override protected void onResume() {
@@ -136,44 +141,33 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 */
 	@Override public Dialog onCreateDialog(int id, Bundle args) {
 		Dialog dialog = null;
+		int color;
 		switch(id) {
 		case COLOR_UNREAD:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Are you sure you want to exit?")
-			       .setCancelable(false)
-			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                finish();
-			           }
-			       })
-			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			dialog = builder.create();
+			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
+				.getInt(UNREAD_COLOR_KEY, Color.WHITE);
+			dialog = new ColorPickerDialog(this, this, color);
 			break;
 		case COLOR_READ:
-			dialog = new Dialog(this);
-			dialog.setContentView(R.layout.color_picker);
-			dialog.setTitle("Pick a color");
-			
-			TextView text = (TextView) dialog.findViewById(R.id.CP_text);
-			text.setText("Hello, this is a custom dialog!");
-			ImageView image = (ImageView) dialog.findViewById(R.id.CP_image);
-			image.setImageResource(R.drawable.aa_logosmall);
-			break;
+			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
+				.getInt(READ_COLOR_KEY, Color.WHITE);
+			dialog = new ColorPickerDialog(this, this, color);
+			break;	
 		case COLOR_TEXT:
-			dialog = new ColorPickerDialog(this, this, 0);
+			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
+				.getInt(READ_COLOR_KEY, Color.WHITE);
+			dialog = new ColorPickerDialog(this, this, color);
 			break;
 		default:
 			dialog = null;
 		}
 		return dialog;
 	}
+		
 	@Override
 	public void colorChanged(int color) {
-		Toast.makeText(getApplicationContext(), ((Integer)color).toString(), Toast.LENGTH_SHORT);
+		PreferenceManager.getDefaultSharedPreferences(this).edit()
+			.putInt(READ_COLOR_KEY, color).commit();
 	}
 	
 }
