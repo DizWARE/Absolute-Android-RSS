@@ -14,35 +14,49 @@
 
 package com.AA.Activities;
 
-import java.util.List;
-
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.AA.R;
-import com.AA.Other.Article;
+import com.AA.Other.ColorPickerDialog;
+
 
 /***
  * This activity starts when the user presses "Settings" in the 
  * Context Menu  of the main app
  * 
  */
-public class AAColors extends ListActivity {
-	SharedPreferences colors;
+public class AAColors extends ListActivity implements ColorPickerDialog.OnColorChangedListener  {
+	
+	private static final int COLOR_UNREAD = 0;
+	private static final int COLOR_READ = 1;
+	private static final int COLOR_TEXT = 2;
+	
+//	private static final String BRIGHTNESS_PREFERENCE_KEY = "brightness";
+//	private static final String COLOR_PREFERENCE_KEY = "color";
+	private static final String READ_COLOR_KEY = "read_color";
+	private static final String UNREAD_COLOR_KEY = "unread_color_key";
+	private SharedPreferences colors;
 
 	//***GUI Member Variables(There will probably be a lot)***
 
 	//***End GUI Member Variables***
 
-
+	ArrayAdapter<String> adapter;
 	/***
 	 * Called when the activity is created and put into memory.
 	 * 
@@ -52,12 +66,20 @@ public class AAColors extends ListActivity {
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-
-		//Usually we would define the layout here...but its possible
-		//that we might make a PreferenceActivity instead(which requires
-		//a different type of layout, I believe). This will take some research
-		//cause I've never used it but sounds like what we may want.
+		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, this.getResources().getStringArray(R.array.ColorOptions));
+		this.setListAdapter(adapter);
+		ListView lv = getListView();
+		lv.setTextFilterEnabled(true);
+		
+		lv.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				showDialog(position, new Bundle());
+//				new ColorPickerDialog(AAColors.this, AAColors.this, 0).show();
+//				Toast.makeText(getApplicationContext(), ((TextView)view).getText(), Toast.LENGTH_SHORT).show();
+			}
+			
+		});
 
 	}
 	/***
@@ -106,7 +128,7 @@ public class AAColors extends ListActivity {
 
 	/***
 	 * Called when the activity comes back into the foreground
-	 * 
+	 * d
 	 * Restore your data here(to give the user a seamless experience)
 	 */
 	@Override protected void onResume() {
@@ -114,118 +136,38 @@ public class AAColors extends ListActivity {
 		super.onResume();
 	}
 	
-	private class ColorOptionAdapter extends ArrayAdapter<Object> {
-		/***
-		 * Constructor - An array adapter has several different constructors.
-		 * This one required both a list of articles and a layout resource for
-		 * each row.
-		 * 
-		 * @param context - Context that will be using this adapter
-		 * @param resource - Layout resource that will define the design of each row
-		 * @param textViewResourceId - Usually used for simple text view lists...not really needed since we have the row layout
-		 * @param objects - List of articles that we will display in the list
-		 */
-		public ColorOptionAdapter(Context context) {
-			super(context, R.layout.article_layout,
-				  R.id.iv_title);
+	/**
+	 * 
+	 */
+	@Override public Dialog onCreateDialog(int id, Bundle args) {
+		Dialog dialog = null;
+		int color;
+		switch(id) {
+		case COLOR_UNREAD:
+			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
+				.getInt(UNREAD_COLOR_KEY, Color.WHITE);
+			dialog = new ColorPickerDialog(this, this, color);
+			break;
+		case COLOR_READ:
+			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
+				.getInt(READ_COLOR_KEY, Color.WHITE);
+			dialog = new ColorPickerDialog(this, this, color);
+			break;	
+		case COLOR_TEXT:
+			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
+				.getInt(READ_COLOR_KEY, Color.WHITE);
+			dialog = new ColorPickerDialog(this, this, color);
+			break;
+		default:
+			dialog = null;
 		}
-		
-		/***
-		 * Adds a list of items into the list view
-		 * 
-		 * @param articles - that are being added to our list view of articles
-		 */
-		public void addList(List < Article > articles) {
-			  for (Article article:articles)
-				this.add(article);
-		}
-
-		/***
-		 * Called when the row is in the users current view. Rows should be prepared here
-		 * 
-		 * It is necessary to inflate the row that was given in the constructor, before you
-		 * are able to change individual pieces of each row...I have code for this if we need it.
-		 * 
-		 * @param position - Current position in the list that is being prepared to be displayed
-		 * @param convertView - Old view that needs to be converted...we won't use this.
-		 * @param parent - parent that this view gets attached to
-		 */
-		@Override
-		public View getView(int position, View convertView,
-					ViewGroup parent) {
-			//Creates a layout inflater using the main activity's context
-			LayoutInflater inflater =
-				AAColors.this.getLayoutInflater();
-// XXX			SharedPreferences settings = AAMain.this.settings;
-
-			View row;
-
-			//Parses the layout we want into a View, so that we can access each
-			//individual piece if we haven't already(in which we just use convertView)
-			if (convertView == null)
-				row =
-					inflater.inflate(R.layout.
-							 article_layout, null);
-			else
-				row = convertView;
-
-			//Grabs our TextViews from our article row layout for edit
-			TextView tv_title =
-				(TextView) row.findViewById(R.id.tv_title);
-			TextView tv_date =
-				(TextView) row.findViewById(R.id.tv_date);
-			TextView tv_description =
-				(TextView) row.findViewById(R.id.
-							tv_description);
-
-			//Gets the article that will be displayed at this position
-// XXX			Article article = this.getItem(position);
-
-			//Puts our data into each of the TextViews for the user's view pleasure
-//			tv_title.setText(article.getTitle());
-//			tv_date.setText(article.getDate());
-//			tv_description.setText(article.getDescription());
-
-			//Grabs our background color for the read/unread from the settings and sets
-			//the row background to reflect that					
-			int bgColor;
-			int textColor;
-
-/*			if (article.isRead())
-				bgColor = settings.getInt("colorRead", Color.WHITE);
-			else
-				bgColor = settings.getInt("colorUnread", Color.BLACK);
-			row.setBackgroundColor(bgColor);
-
-			//Produces a complementary color of the background color and sets
-			//it to the foreground color; this way the user never hides the text
-			int r = (~Color.red(bgColor)) & 0xff;
-			int g = (~Color.green(bgColor)) & 0xff;
-			int b = (~Color.blue(bgColor)) & 0xff;
-			textColor = Color.rgb(r, g, b);
-
-			tv_title.setTextColor(textColor);
-			tv_description.setTextColor(textColor);
-			tv_date.setTextColor(textColor);
-
-			//Allows for long pressing a row item
-			AAMain.this.registerForContextMenu(row);
-
-			//Stores the article within the view(for access elsewhere)
-			row.setTag(article); */
-
-			/**Click listener for the row**/
-			row.setOnClickListener(new OnClickListener() {
-			/***
-			 * Open the file browser when user clicks the article
-			 */
-			@Override public void onClick(View v){
-//				AAMain.this.openBrowser((Article) v.getTag());
-//				ArticleAdapter.this.
-				notifyDataSetChanged();}
-			});
-
-			return row;
-		}
+		return dialog;
 	}
+		
+	@Override
+	public void colorChanged(int color) {
+		PreferenceManager.getDefaultSharedPreferences(this).edit()
+			.putInt(READ_COLOR_KEY, color).commit();
+	}
+	
 }
