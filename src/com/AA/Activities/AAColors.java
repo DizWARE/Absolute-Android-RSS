@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.AA.R;
@@ -37,13 +38,14 @@ import com.AA.Other.ColorPickerDialog;
  * Context Menu  of the main app
  * 
  */
-public class AAColors extends ListActivity {
+public class AAColors extends ListActivity implements ColorPickerDialog.OnColorChangedListener  {
 	
-	static final int COLOR_UNREAD = 0;
-	static final int COLOR_READ = 1;
-	static final int COLOR_TEXT = 2;
-	
-	SharedPreferences colors;
+	private static final int COLOR_UNREAD = 0;
+	private static final int COLOR_READ = 1;
+	private static final int COLOR_TEXT = 2;
+	private static final String BRIGHTNESS_PREFERENCE_KEY = "brightness";
+	private static final String COLOR_PREFERENCE_KEY = "color";
+	private SharedPreferences colors;
 
 	//***GUI Member Variables(There will probably be a lot)***
 
@@ -63,11 +65,12 @@ public class AAColors extends ListActivity {
 		this.setListAdapter(adapter);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
+		
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				showDialog(position, new Bundle());
-				
+//				new ColorPickerDialog(AAColors.this, AAColors.this, 0).show();
 //				Toast.makeText(getApplicationContext(), ((TextView)view).getText(), Toast.LENGTH_SHORT).show();
 			}
 			
@@ -151,7 +154,7 @@ public class AAColors extends ListActivity {
 			dialog = builder.create();
 			break;
 		case COLOR_READ:
-			dialog = new Dialog(getApplicationContext());
+			dialog = new Dialog(this);
 			dialog.setContentView(R.layout.color_picker);
 			dialog.setTitle("Pick a color");
 			
@@ -161,12 +164,16 @@ public class AAColors extends ListActivity {
 			image.setImageResource(R.drawable.aa_logosmall);
 			break;
 		case COLOR_TEXT:
-			dialog = new ColorPickerDialog(getApplicationContext(), null, 0);
+			dialog = new ColorPickerDialog(this, this, 0);
 			break;
 		default:
 			dialog = null;
 		}
 		return dialog;
+	}
+	@Override
+	public void colorChanged(int color) {
+		Toast.makeText(getApplicationContext(), ((Integer)color).toString(), Toast.LENGTH_SHORT);
 	}
 	
 }
