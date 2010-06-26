@@ -18,7 +18,7 @@ import java.util.Calendar;
 
 /***
  * Describes an article that we pull out of the RSS feed
- * 
+ *
  * @author Tyler Robinson
  */
 public class Article implements Serializable, Comparable<Article> {
@@ -30,9 +30,9 @@ public class Article implements Serializable, Comparable<Article> {
 	private String description;
 	private String title;	
 	private String url;
-	
+
 	private boolean read;
-	
+
 	private Calendar articleDate;
 
 	/***
@@ -44,18 +44,18 @@ public class Article implements Serializable, Comparable<Article> {
 	}
 	/***
 	 * Creates a article with the given description, title, and date
-	 * 
+	 *
 	 * @param description - Article description
 	 * @param title - Article title
 	 * @param url - Article URL
 	 * @param date - Article date; String format should be like this:
-	 * 
+	 *
 	 * <Day name:3 letters>, DD <Month name: 3 letters> YYYY HH:MM:SS +0000
 	 */
 	public Article(String description, String title,
 				   String date, String url) {
 		this();
-		this.description = removeEscapeChar(description);		
+		this.description = removeEscapeChar(description);
 		this.title = removeEscapeChar(title);
 		this.url = url;
 		this.articleDate = DateFunctions.makeDate(date);
@@ -141,7 +141,7 @@ public class Article implements Serializable, Comparable<Article> {
 	public void setTitle(String title) {
 		this.title = removeEscapeChar(title);
 	}
-	
+
 	/***
 	 * Removes all escape characters from a string
 	 * @param string - Any string that may contain the &# combo for escape characters
@@ -150,19 +150,17 @@ public class Article implements Serializable, Comparable<Article> {
 	private String removeEscapeChar(String string)
 	{
 		int lastIndex = 0;
-		while(string.contains("&#"))
-		{
+		while(string.contains("&#")) {
 			//Get the escape character index
 			int startIndex = string.indexOf("&#", lastIndex);
 			int endIndex = string.indexOf(";", startIndex);
-			
+
 			//and rip the sucker out of the string
 			String escapeChar = string.substring(startIndex, endIndex);
-			
+
 			//Get the unicode representation and replace all occurrences in the string
 			String replacementChar = HTMLConverter.convertEscapeChar(escapeChar);
-			string = string.replaceAll(escapeChar + ";", replacementChar);
-			
+			string = string.replaceAll(escapeChar + ";", replacementChar);			
 			lastIndex = endIndex;
 		}		
 		return string;
@@ -183,7 +181,7 @@ public class Article implements Serializable, Comparable<Article> {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 	/***
 	 * If the name is equal, its reasonable to say that the articles are equal
 	 */
@@ -191,11 +189,11 @@ public class Article implements Serializable, Comparable<Article> {
 	public boolean equals(Object o) {
 		return this.title.equals(((Article)o).title);
 	}
-	
+
 	/***
 	 * Defines the Natural order of an article...Should be based off of the
 	 * date
-	 * 
+	 *
 	 * @param other - The other article to compare to
 	 */
 	@Override public int compareTo(Article other) {

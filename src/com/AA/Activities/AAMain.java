@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -71,7 +70,7 @@ public class AAMain extends ListActivity {
 	List<Article> articles;
 
 	View selectedView;
-	
+
 	ProgressDialog progressDialog;
 
 	/***
@@ -97,7 +96,7 @@ public class AAMain extends ListActivity {
 
 		//***GUI Elements Set up here***
 		ib_refresh = (ImageButton) findViewById(R.id.ib_refresh);
-		
+
 		//Sets custom font for app title.
 		TextView tv=(TextView)findViewById(R.id.AATitle);
 		Typeface face=Typeface.createFromAsset(getAssets(), "fonts/WREXHAM_.TTF");
@@ -109,15 +108,15 @@ public class AAMain extends ListActivity {
 			@Override public void onReceive(Context context,
 						  Intent intent) {
 				articles.clear();
-				
+
 				Bundle articleBundle = intent.getBundleExtra("articles");
 				ArrayList<String> titles = articleBundle.getStringArrayList("titles");
 				
 				for(String title : titles)
 					articles.add((Article)articleBundle.getSerializable(title));
-				
+
 				progressDialog.cancel();
-				
+
 				refresh();
 		}};
 		
@@ -136,8 +135,7 @@ public class AAMain extends ListActivity {
 			}
 			});
 			//***End Action Listener set up***
-		
-		
+
 		//Starts the service
 		runService();
 	}
@@ -149,9 +147,7 @@ public class AAMain extends ListActivity {
 	 */
 	@Override protected void onStart() {
 		super.onStart();
-
 	}
-	
 
 	/***
 	 * Called when the activity stops running in the foreground.
@@ -164,7 +160,7 @@ public class AAMain extends ListActivity {
 
 	/***
 	 * Called when the activity is cleaned out of memory.
-	 * 
+	 *
 	 * Clean up all member variables here
 	 */
 	@Override protected void onDestroy() {
@@ -178,19 +174,20 @@ public class AAMain extends ListActivity {
 	 * Called when another activity takes over the foreground.
 	 * Also called when the the screen goes off or when the screen
 	 * is rotated. 
-	 * 
+	 *
 	 * Save any data that may be floating around at the moment, here
 	 * ***CORRECTION - Save your data in the onSaveInstanceState(), not here.
 	 */
 	@Override protected void onPause() {
 		//This cancels the receiver(requirement on the Android Dev Guide)
 		this.unregisterReceiver(finishReceiver);
+		RssService.writeData(this, articles);
 		super.onPause();
 	}
 
 	/***
 	 * Called when the activity comes back into the foreground
-	 * 
+	 *
 	 * Restore your data here(to give the user a seamless experience)
 	 */
 	@Override protected void onResume() {
@@ -219,6 +216,8 @@ public class AAMain extends ListActivity {
 		//Creates and shows a progress dialog
 		progressDialog = ProgressDialog.show(this, "", "Loading News. Please Wait...");
 		
+		//This thread class will start the service in the background so that
+		//we aren't interrupting the application process
 		Thread t = new Thread(){
 			@Override
 			public void run() {
@@ -230,7 +229,7 @@ public class AAMain extends ListActivity {
 				} catch (InterruptedException e) {
 					return;
 				}
-				
+
 				Intent service = new Intent();
 				service.putExtra("background", false);
 				service.setClass(AAMain.this, RssService.class);
@@ -290,11 +289,9 @@ public class AAMain extends ListActivity {
 		menu.add(ContextMenu.NONE, SHARE, 1, "Share");
 
 		if (article.isRead())
-			menu.add(ContextMenu.NONE, MARK, 1,
-				 "Mark as unread");
+			menu.add(ContextMenu.NONE, MARK, 1, "Mark as unread");
 		else
-			menu.add(ContextMenu.NONE, MARK, 1,
-				 "Mark as read");
+			menu.add(ContextMenu.NONE, MARK, 1, "Mark as read");
 	}
 
 	/***
@@ -308,10 +305,7 @@ public class AAMain extends ListActivity {
 		else if (item.getItemId() == SHARE)
 			shareDialog(a);
 		else if (item.getItemId() == MARK)
-		{
 			a.toggleRead();
-			markArticle(a);
-		}
 
 		//Tells the adapter to refresh itself
 		adapter.notifyDataSetChanged();
@@ -324,35 +318,20 @@ public class AAMain extends ListActivity {
 	 */
 	private void openBrowser(Article a) {
 		Intent browserLaunch = new Intent();
-
 		a.markRead();
-		markArticle(a);
-		
+
 		//Sets this intent to launch the default browser app with the given URL
 		browserLaunch.setAction(Intent.ACTION_DEFAULT);
 		browserLaunch.addCategory(Intent.CATEGORY_BROWSABLE);
 		browserLaunch.setData(Uri.parse(a.getUrl()));
 		this.startActivity(browserLaunch);
 	}
-	
-	/***
-	 * Updates the article data in the settings.
-	 * 
-	 * @param a - Article we need to update
-	 */
-	private void markArticle(Article a)
-	{
-		//Mark article as read inside the settings
-		Editor e =settings.edit();
-		e.putBoolean(a.getTitle(), a.isRead());
-		e.commit();
-	}
 
 	/***
 	 * Opens a dialog of possible places to share the article
-	 * 
+	 *
 	 * Should hopefully allow for email, SMS, Facebook, and Twitter
-	 * 
+	 *
 	 * @param a - Article to share
 	 */
 	private void shareDialog(Article a) {
@@ -373,36 +352,33 @@ public class AAMain extends ListActivity {
 		startActivity(Intent.createChooser(shareChooser,
 						"How do you want to share?"));
 	}
-	
 
 	/***
 	 * This adapter will take the article data and format each
 	 * row of a list. This data includes the title, date, and the
 	 * article description
-	 * 
+	 *
 	 * @author Tyler Robinson 
-	 * 
+	 *
 	 * (Everyone else who edit this file should add their name)
 	 */
 	private class ArticleAdapter extends ArrayAdapter < Article > {
-
 		/***
 		 * Constructor - An array adapter has several different constructors.
 		 * This one required both a list of articles and a layout resource for
 		 * each row.
-		 * 
+		 *
 		 * @param context - Context that will be using this adapter
 		 * @param resource - Layout resource that will define the design of each row
 		 * @param textViewResourceId - Usually used for simple text view lists...not really needed since we have the row layout
 		 * @param objects - List of articles that we will display in the list
 		 */
 		public ArticleAdapter(Context context) {
-			super(context, R.layout.article_layout,
-				  R.id.iv_title);
+			super(context, R.layout.article_layout, R.id.iv_title);
 		}
 		/***
 		 * Adds a list of items into the list view
-		 * 
+		 *
 		 * @param articles - that are being added to our list view of articles
 		 */
 		public void addList(List < Article > articles) {
@@ -412,10 +388,10 @@ public class AAMain extends ListActivity {
 
 		/***
 		 * Called when the row is in the users current view. Rows should be prepared here
-		 * 
+		 *
 		 * It is necessary to inflate the row that was given in the constructor, before you
 		 * are able to change individual pieces of each row...I have code for this if we need it.
-		 * 
+		 *
 		 * @param position - Current position in the list that is being prepared to be displayed
 		 * @param convertView - Old view that needs to be converted...we won't use this.
 		 * @param parent - parent that this view gets attached to
@@ -432,9 +408,7 @@ public class AAMain extends ListActivity {
 			//Parses the layout we want into a View, so that we can access each
 			//individual piece if we haven't already(in which we just use convertView)
 			if (convertView == null)
-				row =
-					inflater.inflate(R.layout.
-							 article_layout, null);
+				row = inflater.inflate(R.layout.article_layout, null);
 			else
 				row = convertView;
 

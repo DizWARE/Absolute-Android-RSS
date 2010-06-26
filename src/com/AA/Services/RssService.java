@@ -13,14 +13,21 @@
  */
 package com.AA.Services;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.AA.Other.Article;
 import com.AA.Other.RSSParse;
@@ -34,9 +41,9 @@ import com.AA.Other.RSSParse;
  * (Everyone else who edit this file should add their name)
  */
 public class RssService extends Service {
-	
+
 	SharedPreferences settings;
-	
+
 	/***
 	 * Unnecessary method. Used if you are binding a service.
 	 * 
@@ -47,7 +54,7 @@ public class RssService extends Service {
 	@Override public IBinder onBind(Intent intent) {
 		return null;
 	}
-	
+
 	/***
 	 * Called when the service is first put into memory. This is not
 	 * always called when the StartService() is called. 
@@ -65,13 +72,13 @@ public class RssService extends Service {
 	 * 
 	 * All service work should be done here
 	 */
-	@Override public void onStart(Intent intent, int startId) {		
-		fetchData(intent.getBooleanExtra("background", true));		
+	@Override public void onStart(Intent intent, int startId) {
+		fetchData(intent.getBooleanExtra("background", true));
 		super.onStart(intent, startId);
 	}
-	
+
 	/***
-	 * Required for all devices 2.0 and above. 
+	 * Required for all devices 2.0 and above.
 	 * Basically is the exact same thing as onStart(). Can't find any reason 
 	 * for the change but onStart is now depricated
 	 */
@@ -97,76 +104,107 @@ public class RssService extends Service {
 		ArrayList<Article> articleList = (ArrayList<Article>) RSSParse.getArticles(inBackground, this);
 		if(articleList == null)
 			return;
-		
+
 		if(!inBackground)
-			readData(articleList);
-		
+			readData(this, articleList);
+
 		ArrayList<String> titles = new ArrayList<String>();
-		
+
 		//Store the articles into the bundles
 		Bundle articleBundle = new Bundle();
-		for(Article a : articleList)
-		{
+		for(Article a : articleList){
 			titles.add(a.getTitle());
 			articleBundle.putSerializable(a.getTitle(), a);
 		}
-		
+
 		//Broadcast the article bundle to the main app
 		articleBundle.putStringArrayList("titles", titles);
 		Intent broadcast = new Intent("RSS Finish");
-		broadcast.putExtra("articles", articleBundle);		
-		this.sendBroadcast(broadcast);		
-		
-		//Update widget if it can't read broadcast
-		if(!inBackground)
-			writeData(articleList);
+		broadcast.putExtra("articles", articleBundle);
+		this.sendBroadcast(broadcast);
 	}
 
 	/***
 	 * Writes the received data to the application settings so that data
 	 * restoration is easier
-	 * 
+	 *
 	 * @param articleList - List of all the articles that have been aggregated from the stream
 	 */
-	public void writeData(ArrayList<Article> articleList) {
-		String titles = "";
-		Editor e = settings.edit();
-		
-		//For ever article, add its name to a big string and store its 
-			//read status
-		for(Article article : articleList)
-		{
-			titles += article.getTitle().replace("/", "::") + "/";		
-			e.putBoolean(article.getTitle(), article.isRead());
-		}		
-		
-		//and store it into the settings
-		e.putString("articleTitles", titles);
-		e.commit();
+	public static void writeData(Context context,
+			List<Article> articleList) {
+		/* Try to write our data to the file system
+		 *
+		 * CATCH STATEMENTS
+		 * -There is a chance that an IOException might be thrown. According to
+		 *  the exception, if the file doesn't exist this will happen, but according
+		 *  to the method openFileOutput, the file will be created if it doesn't exist
+		 *  I would presume that this exception would also be thrown if, for some reason
+		 *  the file system is unaccessible.
+		 *
+		 *  Note: "articles" has no extension. If we want one, it should be 
+		 *  easy to add, but due to the fact that it is private, I don't think
+		 *  it matters
+		 */
+		try {
+			FileOutputStream fileStream = context.openFileOutput("articles", 
+					Context.MODE_PRIVATE);
+			ObjectOutputStream writer = new ObjectOutputStream(fileStream);
+			writer.writeObject(articleList);
+			writer.close();
+			fileStream.close();
+		} catch(IOException e) {
+			Log.e("AARSS","Problem saving file.",e);
+			return;
+		}
 	}
-	
+
 	/***
 	 * Reads in old data. Used for restoring settings per article
 	 * 
 	 * @param articleList - List of all the articles that have been aggregated from the stream
+	 * 
+	 * Warning is for unresolved conversion from Object to List<Article>. There is
+	 * no way to get rid of this warning so it is supressed
 	 */
-	public void readData(ArrayList<Article> articleList) {
-		String[] articles = settings.getString("articleTitles", "").split("/");		
-		Editor e = settings.edit();
-		
-		//For every item in the restored list; Check to see if that item
-			//has had some action(been read) restore it. If the item isn't 
-			//in the fetched data; remove it from our sett9jgs
-		for(int i = 0; i < articles.length; i++)
-		{
-			Article article = new Article("",articles[i].replace("::", "/"),"","");
-			if(articleList.contains(article) && settings.getBoolean(articles[i], false))
-				articleList.get(articleList.indexOf(article)).markRead();
-			else if(!articleList.contains(article))
-				e.remove(article.getTitle());
+	@SuppressWarnings("unchecked")
+	public static void readData(Context context, List<Article> articleList) {
+		List<Article> oldList = new ArrayList<Article>();
+
+		/* Try to load our info from our streams
+		 *
+		 * CATCH STATEMENTS
+		 * -There is a chance we might hit here if the file doesn't exist.
+		 *  This is fine, as we will write the file before it is called again.
+		 * -There is a chance that the object in the file may not exist in the 
+		 *  systems accessible libraries. This would only happen if the user
+		 *  completely fiddled with the classes we give them in the app
+		 *
+		 *  Note: "articles" has no extension. If we want one, it should be 
+		 *  easy to add, but due to the fact that it is private, I don't think
+		 *  it matters
+		 */
+		try {
+			FileInputStream fileStream = context.openFileInput("articles");
+			ObjectInputStream reader = new ObjectInputStream(fileStream);
+
+			//Unprotected copy from object to List<Articles>(warning comes from this)
+			oldList = (List<Article>)reader.readObject();
+
+			//Close our streams
+			reader.close();
+			fileStream.close();
+		} catch(IOException e) {
+			Log.e("AARSS","Problem loading the file. Does it exists?",e);
+			return;
+		} catch (ClassNotFoundException e) {
+			Log.e("AARSS","Problem converting data from file.",e);
+			return;
 		}
-		
-		e.commit();
+
+		//Restore the state for the current articles
+		for(Article article : oldList)
+			if(articleList.contains(article) && article.isRead())
+				articleList.get(articleList.indexOf(article)).markRead();
 	}
 
 }

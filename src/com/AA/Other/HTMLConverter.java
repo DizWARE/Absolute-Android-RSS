@@ -16,19 +16,17 @@ package com.AA.Other;
 /***
  * Used to convert HTML escape characters to readable Unicode characters
  */
-public class HTMLConverter 
-{	
+public class HTMLConverter {
 	/***
 	 * Given an escape character (&#<digits>), return the represented value
-	 * 
+	 *
 	 * @param escapeCharacter - String with the format &#<digits>
 	 * @return - the represented value.
-	 * 
+	 *
 	 * Luck for us, java uses the same unicode conversion as HTML.
 	 * Basically this rips out the number and converts it into the character it maps to
 	 */
-	public static String convertEscapeChar(String escapeCharacter)
-	{
+	public static String convertEscapeChar(String escapeCharacter)	{
 		String charCode = escapeCharacter.substring(escapeCharacter.indexOf("#")+1);
 		return "" + (char) Integer.parseInt(charCode);
 	}
