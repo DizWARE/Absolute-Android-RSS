@@ -23,10 +23,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.AA.R;
+import com.AA.Other.ColorPickerDialog;
 
 
 /***
@@ -63,7 +66,8 @@ public class AAColors extends ListActivity {
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				showDialog(position, null);
+				showDialog(position, new Bundle());
+				
 //				Toast.makeText(getApplicationContext(), ((TextView)view).getText(), Toast.LENGTH_SHORT).show();
 			}
 			
@@ -147,10 +151,17 @@ public class AAColors extends ListActivity {
 			dialog = builder.create();
 			break;
 		case COLOR_READ:
-			dialog = null;
+			dialog = new Dialog(getApplicationContext());
+			dialog.setContentView(R.layout.color_picker);
+			dialog.setTitle("Pick a color");
+			
+			TextView text = (TextView) dialog.findViewById(R.id.CP_text);
+			text.setText("Hello, this is a custom dialog!");
+			ImageView image = (ImageView) dialog.findViewById(R.id.CP_image);
+			image.setImageResource(R.drawable.aa_logosmall);
 			break;
 		case COLOR_TEXT:
-			dialog = null;
+			dialog = new ColorPickerDialog(getApplicationContext(), null, 0);
 			break;
 		default:
 			dialog = null;
