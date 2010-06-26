@@ -111,7 +111,7 @@ public class AAMain extends ListActivity {
 
 				Bundle articleBundle = intent.getBundleExtra("articles");
 				ArrayList<String> titles = articleBundle.getStringArrayList("titles");
-				
+
 				for(String title : titles)
 					articles.add((Article)articleBundle.getSerializable(title));
 
@@ -119,7 +119,7 @@ public class AAMain extends ListActivity {
 
 				refresh();
 		}};
-		
+
 		//Registers the Receiver with this activity
 		this.registerReceiver(finishReceiver,
 					  new IntentFilter("RSS Finish"));
@@ -207,7 +207,7 @@ public class AAMain extends ListActivity {
 		Collections.sort(articles);
 		adapter.addList(articles);
 	}
-	
+
 	/***
 	 * Runs the fetching service. Pops up with a progress dialog, so that the user
 	 * knows something is happening in the background.
@@ -215,7 +215,7 @@ public class AAMain extends ListActivity {
 	private void runService() {
 		//Creates and shows a progress dialog
 		progressDialog = ProgressDialog.show(this, "", "Loading News. Please Wait...");
-		
+
 		//This thread class will start the service in the background so that
 		//we aren't interrupting the application process
 		Thread t = new Thread(){

@@ -162,7 +162,7 @@ public class Article implements Serializable, Comparable<Article> {
 			String replacementChar = HTMLConverter.convertEscapeChar(escapeChar);
 			string = string.replaceAll(escapeChar + ";", replacementChar);			
 			lastIndex = endIndex;
-		}		
+		}
 		return string;
 	}
 
