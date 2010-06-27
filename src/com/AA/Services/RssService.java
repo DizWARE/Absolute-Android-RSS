@@ -181,19 +181,6 @@ public class RssService extends Service {
 	public static void readData(Context context, List<Article> articleList) {
 		List<Article> oldList = new ArrayList<Article>();
 
-		/* Try to load our info from our streams
-		 *
-		 * CATCH STATEMENTS
-		 * -There is a chance we might hit here if the file doesn't exist.
-		 *  This is fine, as we will write the file before it is called again.
-		 * -There is a chance that the object in the file may not exist in the 
-		 *  systems accessible libraries. This would only happen if the user
-		 *  completely fiddled with the classes we give them in the app
-		 *
-		 *  Note: "articles" has no extension. If we want one, it should be 
-		 *  easy to add, but due to the fact that it is private, I don't think
-		 *  it matters
-		 */
 		try {
 			FileInputStream fileStream = context.openFileInput("articles");
 			ObjectInputStream reader = new ObjectInputStream(fileStream);
@@ -204,6 +191,8 @@ public class RssService extends Service {
 			//Close our streams
 			reader.close();
 			fileStream.close();
+		} catch(java.io.FileNotFoundException e){
+			return; //If the file doesn't exist then nothing is saved. We are done.
 		} catch(IOException e) {
 			Log.e("AARSS","Problem loading the file. Does it exists?",e);
 			return;
