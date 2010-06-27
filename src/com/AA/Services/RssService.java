@@ -81,15 +81,26 @@ public class RssService extends Service {
 	 * Required for all devices 2.0 and above.
 	 * Basically is the exact same thing as onStart(). Can't find any reason 
 	 * for the change but onStart is now depricated
+	 *
+	 * @return - Returns how the system should handle the service. 
+	 * If we are calling the service through the alarm, we would be just 
+	 * fine to be shutdown if the system decides it needs more memory, so return the
+	 * START_NOT_STICKY constant
+	 * If we are calling it from the application, we are expected to finish
+	 * our work before this service is killed so return the START_STICKY constant
 	 */
 	@Override public int onStartCommand(Intent intent, int flags, int startId) {
-		fetchData(intent.getBooleanExtra("background", true));
-		return super.onStartCommand(intent, flags, startId);
+		boolean isBackground = intent.getBooleanExtra("background", true);
+		fetchData(isBackground);
+		if(isBackground)
+			return START_NOT_STICKY;
+		else
+			return START_STICKY;
 	}
 
 	/***
 	 * Called when the service is cleared out of the phone's memory
-	 * 
+	 *
 	 * Clean up all member variables here
 	 */
 	@Override public void onDestroy() {
