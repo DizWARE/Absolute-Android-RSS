@@ -194,6 +194,7 @@ public class AAMain extends ListActivity {
 		//Registers the Receiver with this activity
 		this.registerReceiver(finishReceiver,
 					  new IntentFilter("RSS Finish"));
+		this.refresh();
 		super.onResume();
 	}
 

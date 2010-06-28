@@ -24,7 +24,6 @@ import java.util.List;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -42,7 +41,6 @@ import com.AA.Other.RSSParse;
  */
 public class RssService extends Service {
 
-	SharedPreferences settings;
 
 	/***
 	 * Unnecessary method. Used if you are binding a service.
@@ -63,7 +61,6 @@ public class RssService extends Service {
 	 * needed throughout the service.
 	 */ @Override
 	 public void onCreate() {
-		settings = this.getSharedPreferences("settings", 0);
 		super.onCreate();
 	}
 

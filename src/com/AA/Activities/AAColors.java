@@ -14,21 +14,18 @@
 
 package com.AA.Activities;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.AA.R;
@@ -46,15 +43,12 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	private static final int COLOR_READ = 1;
 	private static final int COLOR_TEXT = 2;
 	
-//	private static final String BRIGHTNESS_PREFERENCE_KEY = "brightness";
-//	private static final String COLOR_PREFERENCE_KEY = "color";
-	private static final String READ_COLOR_KEY = "read_color";
-	private static final String UNREAD_COLOR_KEY = "unread_color_key";
-	private SharedPreferences colors;
-
-	//***GUI Member Variables(There will probably be a lot)***
-
-	//***End GUI Member Variables***
+	private static final String READ_COLOR_KEY = "colorRead";
+	private static final String UNREAD_COLOR_KEY = "colorUnread";
+	private static final String FONT_COLOR_KEY = "colorFont";
+	
+	private SharedPreferences settings;
+	private String currentKey = "";
 
 	ArrayAdapter<String> adapter;
 	/***
@@ -70,13 +64,22 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 		this.setListAdapter(adapter);
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
-		
+
+		settings = this.getSharedPreferences("settings", 0);
+
+		//Remove(hypothetically) that refresh button from the layout
+		this.findViewById(R.id.ib_refresh).setVisibility(View.INVISIBLE);
+		((TextView)this.findViewById(android.R.id.empty)).setText("");
+
+		//Sets custom font for app title.
+		TextView tv=(TextView)findViewById(R.id.AATitle);
+		Typeface face=Typeface.createFromAsset(getAssets(), "fonts/WREXHAM_.TTF");
+		tv.setTypeface(face);
+
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				showDialog(position, new Bundle());
-//				new ColorPickerDialog(AAColors.this, AAColors.this, 0).show();
-//				Toast.makeText(getApplicationContext(), ((TextView)view).getText(), Toast.LENGTH_SHORT).show();
+				showDialog(position);
 			}
 			
 		});
@@ -88,7 +91,6 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 * required for some state handling depending on the situation
 	 */ 
 	@Override protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 	}
 
@@ -96,11 +98,8 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 * Called when the activity stops running in the foreground.
 	 * Should clean up anything that maybe unnecessarily hogging memory
 	 * while in the background
-	 * 
-	 * 
 	 */
 	@Override protected void onStop() {
-		// TODO Auto-generated method stub
 		super.onStop();
 	}
 
@@ -110,7 +109,6 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 * Clean up all member variables here
 	 */
 	@Override protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 
@@ -122,7 +120,6 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 * Save any data that may be floating around at the moment, here
 	 */
 	@Override protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 	}
 
@@ -132,10 +129,19 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 * Restore your data here(to give the user a seamless experience)
 	 */
 	@Override protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 	}
 	
+	/***
+	 * Handles the deprecated version of onCreate for pre-2.2 versions of Android.
+	 *
+	 * Simply returns the dialog that onCreateDialog(int,Bundle) would give with a 
+	 * default Bundle.
+	 */
+	@Override protected Dialog onCreateDialog(int id) {
+		return onCreateDialog(id, new Bundle());
+	}
+
 	/**
 	 * 
 	 */
@@ -144,30 +150,33 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 		int color;
 		switch(id) {
 		case COLOR_UNREAD:
-			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
-				.getInt(UNREAD_COLOR_KEY, Color.WHITE);
+			color = settings.getInt("colorUnread", Color.BLACK);
 			dialog = new ColorPickerDialog(this, this, color);
+			currentKey = UNREAD_COLOR_KEY;
 			break;
 		case COLOR_READ:
-			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
-				.getInt(READ_COLOR_KEY, Color.WHITE);
+			color = settings.getInt("colorRead", Color.WHITE);
 			dialog = new ColorPickerDialog(this, this, color);
+			currentKey = READ_COLOR_KEY;
 			break;	
 		case COLOR_TEXT:
-			color = PreferenceManager.getDefaultSharedPreferences(AAColors.this)
-				.getInt(READ_COLOR_KEY, Color.WHITE);
+			color = settings.getInt("colorFont", Color.BLUE);
 			dialog = new ColorPickerDialog(this, this, color);
+			currentKey = FONT_COLOR_KEY;
 			break;
 		default:
 			dialog = null;
 		}
 		return dialog;
 	}
-		
-	@Override
-	public void colorChanged(int color) {
-		PreferenceManager.getDefaultSharedPreferences(this).edit()
-			.putInt(READ_COLOR_KEY, color).commit();
+
+	/***
+	 * Saves the selected color into our settings preferences
+	 */
+	@Override public void colorChanged(int color) {
+		Editor edit = settings.edit();
+		edit.putInt(currentKey, color);
+		edit.commit();
 	}
 	
 }

@@ -13,12 +13,12 @@
 
     <receiver android:name=".Recievers.AlarmReceiver"></receiver>
 <service android:name=".Services.RssService"></service>
-<activity android:name=".Activities.AASettings"></activity>
-<activity android:name=".Activities.AAColors">
+<activity android:name=".Activities.AASettings" android:theme="@android:style/Theme.NoTitleBar"></activity>
+<activity android:name=".Activities.AAColors" android:theme="@android:style/Theme.NoTitleBar">
 </activity>
-<activity android:name=".Activities.AARefresh"></activity>
-<activity android:name=".Activities.AASettings"></activity>
-<activity android:name=".Activities.AAWidget"></activity>
+<activity android:name=".Activities.AARefresh" android:theme="@android:style/Theme.NoTitleBar"></activity>
+
+<activity android:name=".Activities.AAWidget" android:theme="@android:style/Theme.NoTitleBar"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />
 
