@@ -43,18 +43,12 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	private static final int COLOR_READ = 1;
 	private static final int COLOR_TEXT = 2;
 	
-//	private static final String BRIGHTNESS_PREFERENCE_KEY = "brightness";
-//	private static final String COLOR_PREFERENCE_KEY = "color";
 	private static final String READ_COLOR_KEY = "colorRead";
 	private static final String UNREAD_COLOR_KEY = "colorUnread";
 	private static final String FONT_COLOR_KEY = "colorFont";
 	
 	private SharedPreferences settings;
 	private String currentKey = "";
-
-	//***GUI Member Variables(There will probably be a lot)***
-
-	//***End GUI Member Variables***
 
 	ArrayAdapter<String> adapter;
 	/***
@@ -72,6 +66,10 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 		lv.setTextFilterEnabled(true);
 
 		settings = this.getSharedPreferences("settings", 0);
+
+		//Remove(hypothetically) that refresh button from the layout
+		this.findViewById(R.id.ib_refresh).setVisibility(View.INVISIBLE);
+		((TextView)this.findViewById(android.R.id.empty)).setText("");
 
 		//Sets custom font for app title.
 		TextView tv=(TextView)findViewById(R.id.AATitle);
@@ -100,8 +98,6 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 * Called when the activity stops running in the foreground.
 	 * Should clean up anything that maybe unnecessarily hogging memory
 	 * while in the background
-	 * 
-	 * 
 	 */
 	@Override protected void onStop() {
 		super.onStop();
@@ -142,8 +138,7 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 	 * Simply returns the dialog that onCreateDialog(int,Bundle) would give with a 
 	 * default Bundle.
 	 */
-	@Override
-	protected Dialog onCreateDialog(int id) {
+	@Override protected Dialog onCreateDialog(int id) {
 		return onCreateDialog(id, new Bundle());
 	}
 

@@ -13,9 +13,14 @@
  */
 package com.AA.Activities;
 
+import com.AA.R;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 /***
  * This activity starts when the user presses "Settings" in the 
@@ -41,7 +46,16 @@ public class AAWidget extends Activity {
 	 */
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
 
+		//Remove(hypothetically) that refresh button from the layout
+		this.findViewById(R.id.ib_refresh).setVisibility(View.INVISIBLE);		
+		((TextView)this.findViewById(android.R.id.empty)).setText("");
+
+		//Sets custom font for app title.
+		TextView tv=(TextView)findViewById(R.id.AATitle);
+		Typeface face=Typeface.createFromAsset(getAssets(), "fonts/WREXHAM_.TTF");
+		tv.setTypeface(face);
 
 		//Usually we would define the layout here...but its possible
 		//that we might make a PreferenceActivity instead(which requires
@@ -55,7 +69,6 @@ public class AAWidget extends Activity {
 	 * required for some state handling depending on the situation
 	 */ 
 	@Override protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 	}
 
@@ -67,7 +80,6 @@ public class AAWidget extends Activity {
 	 * 
 	 */
 	@Override protected void onStop() {
-		// TODO Auto-generated method stub
 		super.onStop();
 	}
 
@@ -77,7 +89,6 @@ public class AAWidget extends Activity {
 	 * Clean up all member variables here
 	 */
 	@Override protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 
@@ -89,7 +100,6 @@ public class AAWidget extends Activity {
 	 * Save any data that may be floating around at the moment, here
 	 */
 	@Override protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 	}
 
@@ -99,7 +109,6 @@ public class AAWidget extends Activity {
 	 * Restore your data here(to give the user a seamless experience)
 	 */
 	@Override protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 	}
 }
