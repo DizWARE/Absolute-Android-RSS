@@ -14,10 +14,8 @@
 
 package com.AA.Activities;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,10 +23,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.AA.R;
@@ -74,7 +69,7 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				showDialog(position, new Bundle());
+				showDialog(position);
 //				new ColorPickerDialog(AAColors.this, AAColors.this, 0).show();
 //				Toast.makeText(getApplicationContext(), ((TextView)view).getText(), Toast.LENGTH_SHORT).show();
 			}
@@ -136,6 +131,17 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 		super.onResume();
 	}
 	
+	/***
+	 * Handles the deprecated version of onCreate for pre-2.2 versions of Android.
+	 *
+	 * Simply returns the dialog that onCreateDialog(int,Bundle) would give with a 
+	 * default Bundle.
+	 */
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		return onCreateDialog(id, new Bundle());
+	}
+
 	/**
 	 * 
 	 */
