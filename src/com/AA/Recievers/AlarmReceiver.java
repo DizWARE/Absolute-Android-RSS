@@ -53,12 +53,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 */
 	public static void startAlarm(Context context, long delay) {
 		AlarmManager alarmManager =
-			(AlarmManager) context.getSystemService(Context.
-								ALARM_SERVICE);
-		alarmManager.setRepeating(AlarmManager.RTC,
+			(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		alarmManager.set(AlarmManager.RTC,
 					  System.currentTimeMillis() +
-					  (delay * 3600000),
-					  delay * 3600000,
+					  (delay * 3600000), 
+					  //(delay * 30000), TODO - FIX THIS
 					  getPendingIntent(context));
 	}
 
@@ -83,9 +82,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 */
 	public static PendingIntent getPendingIntent(Context context) {
 		Intent service = new Intent();
-		service.setClass(context, RssService.class);
+		service.setClass(context, AlarmReceiver.class);
 		PendingIntent pendingIntent =
-			PendingIntent.getBroadcast(context, 9999, service, 0);
+			PendingIntent.getBroadcast(context, 9999, service, PendingIntent.FLAG_UPDATE_CURRENT);
 		return pendingIntent;
 	}
 

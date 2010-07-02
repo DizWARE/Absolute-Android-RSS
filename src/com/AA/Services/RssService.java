@@ -19,17 +19,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.AA.Activities.AAMain;
 import com.AA.Other.Article;
 import com.AA.Other.RSSParse;
+import com.AA.Recievers.AlarmReceiver;
 
 /***
  * This service sends a request from the RSS feed, receives the data
@@ -108,16 +115,23 @@ public class RssService extends Service {
 	 * Requests the data from the RSS feed and handles what is received
 	 */
 	public void fetchData(boolean inBackground) {
+		this.notification("Starting service");
+		
 		//Get the list of articles
 		ArrayList<Article> articleList = (ArrayList<Article>) RSSParse.getArticles(inBackground, this);
 		if(articleList == null)
 			return;
 
+		//Read old data if it is the main activity; Otherwise set a timer to launch
+		//this service again
 		if(!inBackground)
 			readData(this, articleList);
+		else
+			AlarmReceiver.startAlarm(this, 
+					this.getSharedPreferences("settings", 0).getLong("freq", 2));
 
 		ArrayList<String> titles = new ArrayList<String>();
-
+		
 		//Store the articles into the bundles
 		Bundle articleBundle = new Bundle();
 		for(Article a : articleList){
@@ -127,9 +141,11 @@ public class RssService extends Service {
 
 		//Broadcast the article bundle to the main app
 		articleBundle.putStringArrayList("titles", titles);
-		Intent broadcast = new Intent("RSS Finish");
+		Intent broadcast = new Intent("RSSFinish");
 		broadcast.putExtra("articles", articleBundle);
 		this.sendBroadcast(broadcast);
+		
+		notification("End Service");
 	}
 
 	/***
@@ -203,5 +219,27 @@ public class RssService extends Service {
 			if(articleList.contains(article) && article.isRead())
 				articleList.get(articleList.indexOf(article)).markRead();
 	}
-
+	
+	
+	/***
+	 * TODO - KEEP ME IF NECESSARY; REMOVE ME(before commit) IF NOT :D
+	 */
+	private void notification(String title)
+	{
+		NotificationManager noteMan = (NotificationManager)this.getSystemService(Service.NOTIFICATION_SERVICE);
+		Notification notification = 
+			new Notification(android.R.drawable.stat_notify_sync,title,System.currentTimeMillis());
+		Intent activity = new Intent();
+		activity.setClass(this, AAMain.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activity, 0);
+		
+		notification.sound = RingtoneManager.getValidRingtoneUri(this);
+		
+		Calendar currentTime = Calendar.getInstance();
+		notification.setLatestEventInfo(this, title,
+				"Updated at " + currentTime.get(Calendar.HOUR)+ ":" + 
+				currentTime.get(Calendar.MINUTE)
+				, pendingIntent);
+		noteMan.notify(9999, notification);
+	}
 }

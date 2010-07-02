@@ -122,7 +122,7 @@ public class AAMain extends ListActivity {
 
 		//Registers the Receiver with this activity
 		this.registerReceiver(finishReceiver,
-					  new IntentFilter("RSS Finish"));
+					  new IntentFilter("RSSFinish"));
 
 		//***Action Listeners set up here***
 		ib_refresh.setOnClickListener(new OnClickListener() {
@@ -164,8 +164,6 @@ public class AAMain extends ListActivity {
 	 * Clean up all member variables here
 	 */
 	@Override protected void onDestroy() {
-		AlarmReceiver.startAlarm(this,
-					 settings.getLong("freq", 2));
 		super.onDestroy();
 	}
 
@@ -182,6 +180,8 @@ public class AAMain extends ListActivity {
 		//This cancels the receiver(requirement on the Android Dev Guide)
 		this.unregisterReceiver(finishReceiver);
 		RssService.writeData(this, articles);
+		AlarmReceiver.startAlarm(this,
+				 settings.getLong("freq", 2));
 		super.onPause();
 	}
 
@@ -193,7 +193,7 @@ public class AAMain extends ListActivity {
 	@Override protected void onResume() {
 		//Registers the Receiver with this activity
 		this.registerReceiver(finishReceiver,
-					  new IntentFilter("RSS Finish"));
+					  new IntentFilter("RSSFinish"));
 		this.refresh();
 		super.onResume();
 	}
