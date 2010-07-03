@@ -130,7 +130,7 @@ public class AAWidgetProvider extends AppWidgetProvider {
 		int[] widgetIds = widgetManager.getAppWidgetIds(
 				new ComponentName(context, AAWidgetProvider.class));
 		for(int i = 0; i < widgetIds.length; i++) {
-			rv_main.setInt(R.id.iv_widget_top, "setBackgroundResource", 
+			rv_main.setImageViewResource(R.id.iv_widget_top,
 					context.getSharedPreferences("settings", 0).getInt(
 							"" + widgetIds[i], R.drawable.widget_layout_top));
 
