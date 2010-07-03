@@ -18,8 +18,6 @@ import java.util.Calendar;
 
 /***
  * Describes an article that we pull out of the RSS feed
- *
- * @author Tyler Robinson
  */
 public class Article implements Serializable, Comparable<Article> {
 	/**
@@ -147,8 +145,7 @@ public class Article implements Serializable, Comparable<Article> {
 	 * @param string - Any string that may contain the &# combo for escape characters
 	 * @return - A new string with the unicode replacements
 	 */
-	private String removeEscapeChar(String string)
-	{
+	private String removeEscapeChar(String string)	{
 		int lastIndex = 0;
 		while(string.contains("&#")) {
 			//Get the escape character index

@@ -20,9 +20,6 @@ import java.util.Date;
 
 /***
  * Bunch of functions for handling dates that represent an article
- * 
- * @author Tyler Robinson
- * 
  */
 public class DateFunctions {
 	/***

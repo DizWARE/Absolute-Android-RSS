@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+	<TextView 
+		android:id = "@+id/tv_freqTitle"
+		android:layout_width = "wrap_content"
+		android:layout_height = "wrap_content"
+		android:layout_alignParentTop = "true"
+		android:textColor = "@color/White"
+		android:textSize = "16px"
+		android:text = "Update Frequency"
+		android:layout_marginLeft = "10px" />	
+	<SeekBar 
+		android:max = "23"	 
+		android:id = "@+id/sb_freq"
+		android:layout_width = "fill_parent"
+		android:layout_height = "wrap_content"
+		android:paddingTop = "10px"
+		android:paddingLeft = "25px"
+		android:paddingRight = "25px"
+		android:progress = "0"
+		android:layout_below = "@id/tv_freqTitle" />
+	<TextView 
+		android:id = "@+id/tv_freq"
+		android:layout_width = "wrap_content"
+		android:layout_height = "wrap_content"
+		android:layout_alignParentRight = "true"
+		android:text = "1 hour/s"		
+		android:textColor = "@color/White"
+		android:paddingRight = "25px"
+		android:layout_below = "@id/sb_freq"/>
+	<TextView 
+		android:id = "@+id/tv_layoutTitle"
+		android:layout_width = "wrap_content"
+		android:layout_height = "wrap_content"	
+		android:layout_below = "@id/tv_freq"
+		android:textSize = "16px"
+		android:textColor = "@color/White"
+		android:text = "Widget Layout"
+		android:layout_marginLeft = "10px"/>	
+	<RadioGroup 
+		android:layout_width = "fill_parent"
+		android:layout_height = "wrap_content"
+		android:layout_below = "@id/tv_layoutTitle"
+		android:id = "@+id/rg_layoutPicker"
+		android:paddingLeft = "5px"
+		android:paddingRight = "5px">
+		<RadioButton 
+			android:layout_width = "wrap_content"
+			android:layout_height = "wrap_content"
+			android:checked = "true"
+			android:id = "@+id/rb_left"
+			android:text = "Left-Aligned"/>
+		<ImageView 
+		 	android:id = "@+id/iv_left_top"
+		 	android:layout_width="wrap_content"
+		  	android:layout_height="wrap_content"
+		  	android:background = "@drawable/widget_layout_top"
+		  	android:layout_marginLeft = "10px"
+		  	android:layout_marginBottom = "10px"/>
+		
+		<RadioButton 
+			android:layout_width = "wrap_content"
+			android:layout_height = "wrap_content"
+			android:text = "Center-Aligned"
+			android:id = "@+id/rb_center"/>
+		<ImageView 
+		 	android:id = "@+id/iv_right_top"
+		 	android:layout_width="wrap_content"
+		  	android:layout_height="wrap_content"
+		  	android:background = "@drawable/widget_layout_top_centered"
+		  	android:layout_marginLeft = "10px"/>
+	</RadioGroup>
+	<Button 
+		android:id = "@+id/btn_ok"
+		android:layout_width="150px"
+		android:layout_height="wrap_content"
+		android:layout_below = "@id/rg_layoutPicker"
+		android:layout_centerInParent = "true"
+		android:text = "OK"
+		android:layout_marginTop = "20px"
+		android:layout_marginBottom = "30px"/>		
+</RelativeLayout>

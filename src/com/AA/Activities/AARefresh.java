@@ -25,10 +25,6 @@ import android.widget.TextView;
 /***
  * This activity starts when the user presses "Settings" in the 
  * Context Menu  of the main app
- * 
- * @author Tyler Robinson 
- * 
- * (Everyone else who edit this file should add their name)
  */
 public class AARefresh extends Activity {
 	SharedPreferences settings;

@@ -48,10 +48,6 @@ import com.AA.Services.RssService;
 /***
  * This is the main activity of the app...it is what is launched 
  * when the user starts the application
- * 
- * @author Tyler Robinson and Leif Andersen
- * 
- * (Everyone else who edit this file should add their name)
  */
 public class AAMain extends ListActivity {
 	private final int OPEN = 0;
@@ -180,8 +176,12 @@ public class AAMain extends ListActivity {
 		//This cancels the receiver(requirement on the Android Dev Guide)
 		this.unregisterReceiver(finishReceiver);
 		RssService.writeData(this, articles);
-		AlarmReceiver.startAlarm(this,
-				 settings.getLong("freq", 2));
+
+		//If there is widgets that require background data fetching, start the alarm up
+		//once the activity is finished
+		if(settings.getInt("widgetCount", 0) > 0)
+			AlarmReceiver.startAlarm(this,
+					 settings.getLong("freq", 2));
 		super.onPause();
 	}
 
@@ -248,7 +248,6 @@ public class AAMain extends ListActivity {
 	@Override public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(getString(R.string.color));
 		menu.add(getString(R.string.refresh));
-		menu.add(getString(R.string.widget));
 		return true;
 	}
 
@@ -266,10 +265,6 @@ public class AAMain extends ListActivity {
 		}
 		else if (item.getTitle().equals(getString(R.string.refresh))) {
 			activity.setClass(this, AARefresh.class);
-			this.startActivity(activity);
-			return true;
-		} if (item.getTitle().equals(getString(R.string.widget))) {
-			activity.setClass(this, AAWidget.class);
 			this.startActivity(activity);
 			return true;
 		} else

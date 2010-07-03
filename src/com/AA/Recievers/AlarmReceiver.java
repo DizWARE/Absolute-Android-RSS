@@ -24,12 +24,9 @@ import com.AA.Services.RssService;
 /***
  * This Receiver is ticked when an alarm message is sent out by the
  * System. It will call the RssService when this happens
- * 
- * @author Tyler Robinson 
- * 
- * (Everyone else who edit this file should add their name)
  */
 public class AlarmReceiver extends BroadcastReceiver {
+	private static final int ALARM_ID = 9999;
 
 	/***
 	 * Called when the receiver catches the message defined by the
@@ -57,7 +54,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		alarmManager.set(AlarmManager.RTC,
 					  System.currentTimeMillis() +
 					  (delay * 3600000), 
-					  //(delay * 30000), TODO - FIX THIS
+					  //(delay * 30000), TODO - FIX THIS(Debug code)
 					  getPendingIntent(context));
 	}
 
@@ -70,8 +67,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 */
 	public static void stopAlarm(Context context) {
 		AlarmManager alarmManager =
-			(AlarmManager) context.getSystemService(Context.
-								ALARM_SERVICE);
+			(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.cancel(getPendingIntent(context));
 	}
 
@@ -84,7 +80,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		Intent service = new Intent();
 		service.setClass(context, AlarmReceiver.class);
 		PendingIntent pendingIntent =
-			PendingIntent.getBroadcast(context, 9999, service, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent.getBroadcast(context, ALARM_ID, service, PendingIntent.FLAG_UPDATE_CURRENT);
 		return pendingIntent;
 	}
 

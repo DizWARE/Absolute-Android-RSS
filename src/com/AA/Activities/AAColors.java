@@ -35,7 +35,6 @@ import com.AA.Other.ColorPickerDialog;
 /***
  * This activity starts when the user presses "Settings" in the 
  * Context Menu  of the main app
- * 
  */
 public class AAColors extends ListActivity implements ColorPickerDialog.OnColorChangedListener  {
 	
@@ -83,7 +82,6 @@ public class AAColors extends ListActivity implements ColorPickerDialog.OnColorC
 			}
 			
 		});
-
 	}
 	/***
 	 * Called when the activity starts. Not 100% necessary since 

@@ -38,6 +38,4 @@
   	android:textColor ="@color/White"
   	android:text = "Be sure you have a connection and try again."
   	android:layout_below = "@id/tv_title" />
-
-
 </RelativeLayout>

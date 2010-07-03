@@ -41,13 +41,8 @@ import com.AA.Recievers.AlarmReceiver;
 /***
  * This service sends a request from the RSS feed, receives the data
  * that is sent back, and saves the data to the file system.
- * 
- * @author Tyler Robinson 
- * 
- * (Everyone else who edit this file should add their name)
  */
 public class RssService extends Service {
-
 
 	/***
 	 * Unnecessary method. Used if you are binding a service.
@@ -115,12 +110,12 @@ public class RssService extends Service {
 	 * Requests the data from the RSS feed and handles what is received
 	 */
 	public void fetchData(boolean inBackground) {
-		this.notification("Starting service");
-		
+		this.notification("Starting service");//TODO - FIX THIS(Debug Code)
+
 		//Get the list of articles
 		ArrayList<Article> articleList = (ArrayList<Article>) RSSParse.getArticles(inBackground, this);
 		if(articleList == null)
-			return;
+			articleList = readData(this);
 
 		//Read old data if it is the main activity; Otherwise set a timer to launch
 		//this service again
@@ -131,7 +126,7 @@ public class RssService extends Service {
 					this.getSharedPreferences("settings", 0).getLong("freq", 2));
 
 		ArrayList<String> titles = new ArrayList<String>();
-		
+
 		//Store the articles into the bundles
 		Bundle articleBundle = new Bundle();
 		for(Article a : articleList){
@@ -144,8 +139,8 @@ public class RssService extends Service {
 		Intent broadcast = new Intent("RSSFinish");
 		broadcast.putExtra("articles", articleBundle);
 		this.sendBroadcast(broadcast);
-		
-		notification("End Service");
+
+		notification("End Service");//TODO - FIX THIS(Debug Code)
 	}
 
 	/***
@@ -186,55 +181,69 @@ public class RssService extends Service {
 	 * Reads in old data. Used for restoring settings per article
 	 * 
 	 * @param articleList - List of all the articles that have been aggregated from the stream
-	 * 
-	 * Warning is for unresolved conversion from Object to List<Article>. There is
-	 * no way to get rid of this warning so it is supressed
 	 */
-	@SuppressWarnings("unchecked")
 	public static void readData(Context context, List<Article> articleList) {
-		List<Article> oldList = new ArrayList<Article>();
+		List<Article> oldList = readData(context);
 
-		try {
-			FileInputStream fileStream = context.openFileInput("articles");
-			ObjectInputStream reader = new ObjectInputStream(fileStream);
-
-			//Unprotected copy from object to List<Articles>(warning comes from this)
-			oldList = (List<Article>)reader.readObject();
-
-			//Close our streams
-			reader.close();
-			fileStream.close();
-		} catch(java.io.FileNotFoundException e){
-			return; //If the file doesn't exist then nothing is saved. We are done.
-		} catch(IOException e) {
-			Log.e("AARSS","Problem loading the file. Does it exists?",e);
+		if(oldList == null)
 			return;
-		} catch (ClassNotFoundException e) {
-			Log.e("AARSS","Problem converting data from file.",e);
-			return;
-		}
 
 		//Restore the state for the current articles
 		for(Article article : oldList)
 			if(articleList.contains(article) && article.isRead())
 				articleList.get(articleList.indexOf(article)).markRead();
 	}
-	
+
+	/***
+	 * Reads in data from the saved file.
+	 * 
+	 * @param context - Context that gives us some system access
+	 * @return - Returns the list of items that were saved; If there was problem
+	 * when gathering this data, an empty list is returned
+	 */
+	@SuppressWarnings("unchecked")
+	public static ArrayList<Article> readData(Context context) {
+		ArrayList<Article> oldList = new ArrayList<Article>();
+
+		try {
+			FileInputStream fileStream = context.openFileInput("articles");
+			ObjectInputStream reader = new ObjectInputStream(fileStream);
+
+			//Unprotected copy from object to List<Articles>(warning comes from this)
+			oldList = (ArrayList<Article>)reader.readObject();
+
+			//Close our streams
+			reader.close();
+			fileStream.close();
+
+			return oldList;
+		} catch(java.io.FileNotFoundException e){
+			return new ArrayList<Article>(); //If the file doesn't exist then nothing is saved. We are done.
+		} catch(IOException e) {
+			Log.e("AARSS","Problem loading the file. Does it exists?",e);
+			return new ArrayList<Article>();
+		} catch (ClassNotFoundException e) {
+			Log.e("AARSS","Problem converting data from file.",e);
+			return new ArrayList<Article>();
+		}
+	}
 	
 	/***
-	 * TODO - KEEP ME IF NECESSARY; REMOVE ME(before commit) IF NOT :D
+	 * TODO - DEBUG CODE; 
+	 * This will allow a notification print out to the Notification tray
+	 *
+	 * This should be removed before code is released
 	 */
-	private void notification(String title)
-	{
+	private void notification(String title) {
 		NotificationManager noteMan = (NotificationManager)this.getSystemService(Service.NOTIFICATION_SERVICE);
 		Notification notification = 
 			new Notification(android.R.drawable.stat_notify_sync,title,System.currentTimeMillis());
 		Intent activity = new Intent();
 		activity.setClass(this, AAMain.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activity, 0);
-		
+
 		notification.sound = RingtoneManager.getValidRingtoneUri(this);
-		
+
 		Calendar currentTime = Calendar.getInstance();
 		notification.setLatestEventInfo(this, title,
 				"Updated at " + currentTime.get(Calendar.HOUR)+ ":" + 

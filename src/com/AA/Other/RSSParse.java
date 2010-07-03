@@ -91,10 +91,13 @@ public class RSSParse{
 		if(isBackground && !manager.getBackgroundDataSetting())
 			return false;
 		//if the current connection isn't ready for data then bail
-		if(manager.getActiveNetworkInfo().getState() != NetworkInfo.State.CONNECTED)
+		//Apparently if there is no network, the network info returns null
+		NetworkInfo netInfo = manager.getActiveNetworkInfo();
+		if(netInfo == null || manager.getActiveNetworkInfo().getState() != NetworkInfo.State.CONNECTED)
 			return false;
 		return true;
 	}
+
 	/**
 	 * Get the XML document for the RSS feed
 	 * @return the XML Document for the feed on success, on error returns null
