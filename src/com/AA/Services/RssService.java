@@ -36,7 +36,6 @@ import android.util.Log;
 import com.AA.Activities.AAMain;
 import com.AA.Other.Article;
 import com.AA.Other.RSSParse;
-import com.AA.Recievers.AlarmReceiver;
 
 /***
  * This service sends a request from the RSS feed, receives the data
@@ -121,9 +120,6 @@ public class RssService extends Service {
 		//this service again
 		if(!inBackground)
 			readData(this, articleList);
-		else
-			AlarmReceiver.startAlarm(this, 
-					this.getSharedPreferences("settings", 0).getLong("freq", 2));
 
 		ArrayList<String> titles = new ArrayList<String>();
 

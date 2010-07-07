@@ -180,8 +180,7 @@ public class AAMain extends ListActivity {
 		//If there is widgets that require background data fetching, start the alarm up
 		//once the activity is finished
 		if(settings.getInt("widgetCount", 0) > 0)
-			AlarmReceiver.startAlarm(this,
-					 settings.getLong("freq", 2));
+			AlarmReceiver.startAlarm(this);
 		super.onPause();
 	}
 

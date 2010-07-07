@@ -144,6 +144,7 @@ public class AAWidgetProvider extends AppWidgetProvider {
 	 */
 	public static void launchService(Context context) {
 		updateWidget(context, "Fetching Data...", "Please wait while I get latest news.");
+		AlarmReceiver.startAlarm(context);
 		Intent service = new Intent();
 		service.putExtra("background", true);
 		service.setClass(context, RssService.class);

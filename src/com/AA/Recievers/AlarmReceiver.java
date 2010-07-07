@@ -36,10 +36,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param intent - Message that started this Receiver
 	 */
 	@Override public void onReceive(Context context, Intent intent) {
-		 Intent service = new Intent();
-		 service.putExtra("background", true);
-		 service.setClass(context, RssService.class);
-		 context.startService(service);
+		startAlarm(context);
+		Intent service = new Intent();
+		service.putExtra("background", true);
+		service.setClass(context, RssService.class);
+		context.startService(service);
 	}
 	/***
 	 * Tells the System to ping the given message after the given number of milliseconds
@@ -48,7 +49,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param pendingIntent - Message that will be ping after the given delay
 	 * @param delay - How long, in milliseconds, till the message is sent
 	 */
-	public static void startAlarm(Context context, long delay) {
+	public static void startAlarm(Context context) {
+		long delay = context.getSharedPreferences("settings", 0).getLong("freq", 2);
+
 		AlarmManager alarmManager =
 			(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.set(AlarmManager.RTC,
