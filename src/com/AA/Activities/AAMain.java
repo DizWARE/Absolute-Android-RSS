@@ -191,25 +191,10 @@ public class AAMain extends ListActivity {
 
 		//This thread class will start the service in the background so that
 		//we aren't interrupting the application process
-		Thread t = new Thread(){
-			@Override
-			public void run() {
-
-				//Tells the thread to wait 1 second. Allows the app
-					//to start before trying to launch the service
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					return;
-				}
-
-				Intent service = new Intent();
-				service.putExtra("background", false);
-				service.setClass(AAMain.this, RssService.class);
-				AAMain.this.startService(service);
-			}
-		};
-		t.start();
+		Intent service = new Intent();
+		service.putExtra("background", false);
+		service.setClass(AAMain.this, RssService.class);
+		AAMain.this.startService(service);
 	}
 
 	/***

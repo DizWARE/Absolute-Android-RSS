@@ -37,6 +37,7 @@ import com.AA.Other.RSSParse;
  */
 public class RssService extends Service {
 
+	boolean isBackground;
 	/***
 	 * Unnecessary method. Used if you are binding a service.
 	 * 
@@ -82,8 +83,11 @@ public class RssService extends Service {
 	 * our work before this service is killed so return the START_STICKY constant
 	 */
 	@Override public int onStartCommand(Intent intent, int flags, int startId) {
-		boolean isBackground = intent.getBooleanExtra("background", true);
-		fetchData(isBackground);
+		
+		isBackground = intent.getBooleanExtra("background", true);
+		Thread thread = new Thread(new Runnable() 
+			{ @Override public void run() { fetchData(isBackground); } });
+		thread.start();
 		if(isBackground)
 			return START_NOT_STICKY;
 		else
@@ -127,6 +131,8 @@ public class RssService extends Service {
 		Intent broadcast = new Intent("RSSFinish");
 		broadcast.putExtra("articles", articleBundle);
 		this.sendBroadcast(broadcast);
+		
+		this.stopSelf();
 	}
 
 	/***
