@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 import com.AA.R;
 import com.AA.Other.Article;
+import com.AA.Other.DisplayTypes;
 import com.AA.Recievers.AlarmReceiver;
 import com.AA.Services.RssService;
 
@@ -137,34 +138,6 @@ public class AAMain extends ListActivity {
 	}
 
 	/***
-	 * Called when the activity starts. Not 100% necessary since 
-	 * this usually happens after onCreate or onResume, but may be
-	 * required for some state handling depending on the situation
-	 */
-	@Override protected void onStart() {
-		super.onStart();
-	}
-
-	/***
-	 * Called when the activity stops running in the foreground.
-	 * Should clean up anything that maybe unnecessarily hogging memory
-	 * while in the background
-	 */
-	@Override protected void onStop() {
-		super.onStop();
-	}
-
-	/***
-	 * Called when the activity is cleaned out of memory.
-	 *
-	 * Clean up all member variables here
-	 */
-	@Override protected void onDestroy() {
-		super.onDestroy();
-	}
-
-
-	/***
 	 * Called when another activity takes over the foreground.
 	 * Also called when the the screen goes off or when the screen
 	 * is rotated. 
@@ -245,8 +218,7 @@ public class AAMain extends ListActivity {
 	 * Should display "Settings" when the user presses MENU
 	 */
 	@Override public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(getString(R.string.color));
-		menu.add(getString(R.string.refresh));
+		menu.add(getString(R.string.settings));
 		return true;
 	}
 
@@ -257,13 +229,8 @@ public class AAMain extends ListActivity {
 	 */
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
 		Intent activity = new Intent();
-		if (item.getTitle().equals(getString(R.string.color))) {
-			activity.setClass(this, AAColors.class);
-			this.startActivity(activity);
-			return true;
-		}
-		else if (item.getTitle().equals(getString(R.string.refresh))) {
-			activity.setClass(this, AARefresh.class);
+		if (item.getTitle().equals(getString(R.string.settings))) {
+			activity.setClass(this, AASettings.class);
 			this.startActivity(activity);
 			return true;
 		} else
@@ -429,19 +396,17 @@ public class AAMain extends ListActivity {
 			int bgColor;
 			int textColor;
 
-			if (article.isRead())
-				bgColor = settings.getInt("colorRead", Color.WHITE);
-			else
-				bgColor = settings.getInt("colorUnread", Color.BLACK);
+			if (article.isRead()) {
+				bgColor = settings.getInt(DisplayTypes.colorRead.toString(), Color.WHITE);
+				textColor = settings.getInt(DisplayTypes.txtRead.toString(), Color.BLACK);
+			}else{
+				bgColor = settings.getInt(DisplayTypes.colorUnread.toString(), Color.BLACK);
+				textColor = settings.getInt(DisplayTypes.txtUnread.toString(), Color.WHITE);
+			}
 			row.setBackgroundColor(bgColor);
 
 			//Produces a complementary color of the background color and sets
 			//it to the foreground color; this way the user never hides the text
-			int r = (~Color.red(bgColor)) & 0xff;
-			int g = (~Color.green(bgColor)) & 0xff;
-			int b = (~Color.blue(bgColor)) & 0xff;
-			textColor = Color.rgb(r, g, b);
-
 			tv_title.setTextColor(textColor);
 			tv_description.setTextColor(textColor);
 			tv_date.setTextColor(textColor);

@@ -18,45 +18,23 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+
+enum Months {January,Febuary,March,April,May,June,July,
+	August,September,November,December}
+
 /***
  * Bunch of functions for handling dates that represent an article
  */
 public class DateFunctions {
 	/***
-	 * Given a month number, the month name is returned
-	 * 
-	 * I hate this code and proves the need for enumerations, but since
-	 * those don't exist in java(or I don't think they do), this is as close
-	 * as we can get(unless we defined a dictionary of some sort...but meh)
+	 * Given a month number, a converted string version is returned
 	 * 
 	 * @param month - the number of the month to be converted
 	 * @return The name of the given month 
 	 */
 	public static String getMonth(int month) {
-		if(month == 1)
-			return "January";
-		else if(month == 2)
-			return "February";
-		else if(month == 3)
-			return "March";
-		else if(month == 4)
-			return "April";
-		else if(month == 5)
-			return "May";
-		else if(month == 6)
-			return "June";
-		else if(month == 7)
-			return "July";
-		else if(month == 8)
-			return "August";
-		else if(month == 9)
-			return "September";
-		else if(month == 10)
-			return "October";
-		else if(month == 11)
-			return "November";
-		else
-			return "December";
+		Months[] months = Months.values();
+		return months[month].toString();
 	}
 	
 	/***
@@ -140,7 +118,7 @@ public class DateFunctions {
 				isCrossingYears(articleDate,currentTime))
 			printDate = "Yesterday";
 		else	
-			printDate = DateFunctions.getMonth(articleDate.get(Calendar.MONTH)+1) + " " +
+			printDate = DateFunctions.getMonth(articleDate.get(Calendar.MONTH)) + " " +
 					articleDate.get(Calendar.DAY_OF_MONTH) + ", " + articleDate.get(Calendar.YEAR);
 		
 		return printDate;

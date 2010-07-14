@@ -43,11 +43,13 @@ public class AAWidgetProvider extends AppWidgetProvider {
 	@Override public void onReceive(Context context, Intent intent) {
 		//If we have finished fetching new data;
 		//Otherwise launch our service to fetch the data
+		//TODO - May change this a bit. Tends to do some weird things with the
+		//Enabled intent. Apparantly that gets called in all sorts of random places, and
+		//we only need it for BootComplete and only if there is at least one widget on the home
 		if(intent.getAction().equals("RSSFinish"))	{
 			updateArticles(context, intent);
 		} else if(intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_ENABLED)) {
 			launchService(context);
-			return;
 		}
 
 		super.onReceive(context, intent);
@@ -140,6 +142,7 @@ public class AAWidgetProvider extends AppWidgetProvider {
 
 	/***
 	 * Launches the service and updates the widget with some prep data
+	 *
 	 * @param context - Context that gives us access to system functions
 	 */
 	public static void launchService(Context context) {

@@ -19,21 +19,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.AA.Activities.AAMain;
 import com.AA.Other.Article;
 import com.AA.Other.RSSParse;
 
@@ -109,8 +103,6 @@ public class RssService extends Service {
 	 * Requests the data from the RSS feed and handles what is received
 	 */
 	public void fetchData(boolean inBackground) {
-		this.notification("Starting service");//TODO - FIX THIS(Debug Code)
-
 		//Get the list of articles
 		ArrayList<Article> articleList = (ArrayList<Article>) RSSParse.getArticles(inBackground, this);
 		if(articleList == null)
@@ -135,8 +127,6 @@ public class RssService extends Service {
 		Intent broadcast = new Intent("RSSFinish");
 		broadcast.putExtra("articles", articleBundle);
 		this.sendBroadcast(broadcast);
-
-		notification("End Service");//TODO - FIX THIS(Debug Code)
 	}
 
 	/***
@@ -222,29 +212,5 @@ public class RssService extends Service {
 			Log.e("AARSS","Problem converting data from file.",e);
 			return new ArrayList<Article>();
 		}
-	}
-	
-	/***
-	 * TODO - DEBUG CODE; 
-	 * This will allow a notification print out to the Notification tray
-	 *
-	 * This should be removed before code is released
-	 */
-	private void notification(String title) {
-		NotificationManager noteMan = (NotificationManager)this.getSystemService(Service.NOTIFICATION_SERVICE);
-		Notification notification = 
-			new Notification(android.R.drawable.stat_notify_sync,title,System.currentTimeMillis());
-		Intent activity = new Intent();
-		activity.setClass(this, AAMain.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activity, 0);
-
-		notification.sound = RingtoneManager.getValidRingtoneUri(this);
-
-		Calendar currentTime = Calendar.getInstance();
-		notification.setLatestEventInfo(this, title,
-				"Updated at " + currentTime.get(Calendar.HOUR)+ ":" + 
-				currentTime.get(Calendar.MINUTE)
-				, pendingIntent);
-		noteMan.notify(9999, notification);
 	}
 }

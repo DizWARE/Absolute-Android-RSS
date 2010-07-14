@@ -57,7 +57,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 		alarmManager.set(AlarmManager.RTC,
 					  System.currentTimeMillis() +
 					  (delay * 3600000), 
-					  //(delay * 30000), TODO - FIX THIS(Debug code)
 					  getPendingIntent(context));
 	}
 
