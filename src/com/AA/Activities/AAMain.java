@@ -188,7 +188,8 @@ public class AAMain extends ListActivity {
 	private void runService() {
 		//Creates and shows a progress dialog
 		progressDialog = ProgressDialog.show(this, "", "Loading News. Please Wait...");
-
+		progressDialog.setCancelable(true);
+		
 		//This thread class will start the service in the background so that
 		//we aren't interrupting the application process
 		Intent service = new Intent();
